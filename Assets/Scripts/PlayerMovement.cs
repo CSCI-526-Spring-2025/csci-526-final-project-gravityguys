@@ -8,10 +8,7 @@ public class PlayerMovement : MonoBehaviour
     private float desiredMoveSpeed;
     private float lastDesiredMoveSpeed;
     public float walkSpeed;
-    public float sprintSpeed;
-    public float slideSpeed;
     public float wallrunSpeed;
-
     public float speedIncreaseMultiplier;
     public float slopeIncreaseMultiplier;
 
@@ -30,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
-    public KeyCode sprintKey = KeyCode.LeftShift;
+    public KeyCode dashingKey = KeyCode.LeftShift;
     public KeyCode crouchKey = KeyCode.LeftControl;
 
     [Header("Ground Check")]
@@ -57,14 +54,12 @@ public class PlayerMovement : MonoBehaviour
     public enum MovementState
     {
         walking,
-        sprinting,
+        dashing,
         wallrunning,
         crouching,
-        sliding,
         air
     }
-
-    public bool sliding;
+    
     public bool crouching;
     public bool wallrunning;
 
@@ -141,19 +136,6 @@ public class PlayerMovement : MonoBehaviour
             desiredMoveSpeed = wallrunSpeed;
         }
 
-        // Mode - Sliding
-        else if (sliding)
-        {
-            state = MovementState.sliding;
-
-            // increase speed by one every second
-            if (OnSlope() && rb.linearVelocity.y < 0.1f)
-                desiredMoveSpeed = slideSpeed;
-
-            else
-                desiredMoveSpeed = sprintSpeed;
-        }
-
         // Mode - Crouching
         else if (crouching)
         {
@@ -161,11 +143,11 @@ public class PlayerMovement : MonoBehaviour
             desiredMoveSpeed = crouchSpeed;
         }
 
-        // Mode - Sprinting
-        else if (grounded && Input.GetKey(sprintKey))
+        else if (!wallrunning && !grounded && Input.GetKey(dashingKey))//dashing
         {
-            state = MovementState.sprinting;
-            desiredMoveSpeed = sprintSpeed;
+            state = MovementState.dashing;
+            moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+            rb.AddForce(moveDirection.normalized*moveSpeed*3f, ForceMode.Force);
         }
 
         // Mode - Walking
