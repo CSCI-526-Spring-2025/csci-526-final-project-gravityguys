@@ -722,7 +722,7 @@ MonoBehaviour:
   wallClimbDescendSpeed: 3
   wallJumpUpForce: 7
   wallJumpSideForce: 12
-  exitWallTime: 0.2
+  exitWallTime: 2
   upwardsWallRunKey: 304
   downwardsWallRunKey: 306
   wallJumpKey: 32
