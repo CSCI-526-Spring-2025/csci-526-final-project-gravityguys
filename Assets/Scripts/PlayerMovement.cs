@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public float wallrunSpeed;
     public float speedIncreaseMultiplier;
     public float slopeIncreaseMultiplier;
-
+    public Camera playerCamera;
     public float groundDrag;
 
     [Header("Jumping")]
@@ -25,6 +25,14 @@ public class PlayerMovement : MonoBehaviour
     public float crouchYScale;
     private float startYScale;
 
+    [Header("Dashing")]
+    [Header("Dashing")]
+    public float dashSpeed = 50f;
+    public float dashTime = 0.2f;
+    public float dashCooldown = 1.0f;
+    public bool readyToDash = true;
+
+
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode dashingKey = KeyCode.LeftShift;
@@ -33,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Ground Check")]
     public float playerHeight;
     public LayerMask whatIsGround;
-    bool grounded;
+    public bool grounded;
 
     [Header("Slope Handling")]
     public float maxSlopeAngle;
@@ -65,6 +73,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        playerCamera = Camera.main;
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
@@ -108,6 +117,13 @@ public class PlayerMovement : MonoBehaviour
 
             Invoke(nameof(ResetJump), jumpCooldown);
         }
+        // start dashing
+        if (Input.GetKeyDown(dashingKey) && readyToDash && !wallrunning)
+        {
+            StartCoroutine(Dash());
+        }
+
+
 
         // start crouch
         if (Input.GetKeyDown(crouchKey) && horizontalInput == 0 && verticalInput == 0)
@@ -178,6 +194,49 @@ public class PlayerMovement : MonoBehaviour
 
         lastDesiredMoveSpeed = desiredMoveSpeed;
     }
+
+    private IEnumerator Dash()
+    {
+        if (playerCamera == null)
+        {
+            Debug.LogError("No Player Camera found! Assign it in the Inspector.");
+            yield break;
+        }
+
+        readyToDash = false;
+        rb.useGravity = false;
+
+        //  Get exact direction the camera is facing
+        Vector3 dashDirection = playerCamera.transform.forward;
+
+        //  Fix: Prevent downward tilt when looking forward
+        if (Mathf.Abs(dashDirection.y) < 0.1f)  // If looking mostly forward, remove downward influence
+        {
+            dashDirection.y = 0f;
+        }
+
+        //  Normalize direction to ensure equal dash distance
+        dashDirection = dashDirection.normalized;
+
+        //  Apply force instead of overriding velocity (more natural movement)
+        rb.linearVelocity = Vector3.zero;  // Reset velocity before dash
+        rb.AddForce(dashDirection * dashSpeed, ForceMode.Impulse);
+
+        Debug.Log("Dashing in Direction: " + dashDirection + " | Speed: " + dashSpeed);
+
+        yield return new WaitForSeconds(dashTime);
+
+        //  Reset movement after dash
+        rb.useGravity = true;
+        rb.linearVelocity = Vector3.zero;
+
+        yield return new WaitForSeconds(dashCooldown);
+
+        readyToDash = true;
+    }
+
+
+
 
     private IEnumerator SmoothlyLerpMoveSpeed()
     {
@@ -292,4 +351,14 @@ public class PlayerMovement : MonoBehaviour
         float mult = Mathf.Pow(10.0f, (float)digits);
         return Mathf.Round(value * mult) / mult;
     }
+
+    
+
+
+
+
+
+
+
 }
+

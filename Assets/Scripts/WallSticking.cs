@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class WallSticking : MonoBehaviour
 {
@@ -21,7 +22,8 @@ public class WallSticking : MonoBehaviour
     private bool wallLeft, wallRight;
 
     [SerializeField] private Transform orientation;
-    private PlayerMovement pm;
+    public PlayerMovement pm; // Allows Unity Inspector access
+
     private Rigidbody rb;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -88,7 +90,11 @@ public class WallSticking : MonoBehaviour
                 exitingWall = true;
                 exitWallTimer = exitWallTime;
             }
-            if(Input.GetKeyDown(wallJumpKey))
+            if (Input.GetKeyDown(pm.dashingKey) && pm.wallrunning && pm.readyToDash)
+            {
+                StartCoroutine(WallDash());
+            }
+            if (Input.GetKeyDown(wallJumpKey))
                 WallJump();
         }else if (exitingWall) //jumping off || stamina has run out
         {
@@ -138,6 +144,26 @@ public class WallSticking : MonoBehaviour
         
         if(!(wallLeft && horizontalInput > 0) && !(wallRight && horizontalInput < 0))
             rb.AddForce(-wallNormal * 100, ForceMode.Force);
+    }
+
+    private IEnumerator WallDash()
+    {
+        pm.readyToDash = false; // Prevent multiple dashes
+        pm.wallrunning = false; // Stop wall-running
+        pm.state = PlayerMovement.MovementState.dashing;
+
+        Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
+        Vector3 dashDirection = wallNormal * -1.5f + pm.orientation.forward; // Dash away from wall
+
+        rb.linearVelocity = Vector3.zero;
+        rb.AddForce(dashDirection.normalized * pm.dashSpeed, ForceMode.Impulse);
+
+        yield return new WaitForSeconds(pm.dashTime);
+
+        pm.state = pm.grounded ? PlayerMovement.MovementState.walking : PlayerMovement.MovementState.air;
+
+        yield return new WaitForSeconds(pm.dashCooldown);
+        pm.readyToDash = true; // Re-enable dashing
     }
 
     private void EndWallRun()
