@@ -7,8 +7,10 @@ public class DamagePlayerOnHit : MonoBehaviour
         if (other.tag.Equals("Player"))
         {
             GameObject respawner = GameObject.FindGameObjectWithTag("Respawn");
-            if (respawner)
-                respawner.BroadcastMessage("RespawnPlayer");
+            if (respawner) {
+            	respawner.BroadcastMessage("RespawnPlayer");
+             	AnalyticsManager.Instance.TrackPlayerDeath();
+            }
         }
     }
 }
