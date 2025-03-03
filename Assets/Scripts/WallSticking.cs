@@ -22,7 +22,7 @@ public class WallSticking : MonoBehaviour
     private bool wallLeft, wallRight;
 
     [SerializeField] private Transform orientation;
-    public PlayerMovement pm; // Allows Unity Inspector access
+    private PlayerMovement pm;
 
     private Rigidbody rb;
     
@@ -81,7 +81,6 @@ public class WallSticking : MonoBehaviour
             {
                 StartWallRun();
             }
-            
             if(wallStickingTimer > 0)
                 wallStickingTimer -= Time.deltaTime;
                 Debug.Log("wall sticiking: " + wallStickingTimer);
@@ -89,10 +88,6 @@ public class WallSticking : MonoBehaviour
             {
                 exitingWall = true;
                 exitWallTimer = exitWallTime;
-            }
-            if (Input.GetKeyDown(pm.dashingKey) && pm.wallrunning && pm.readyToDash)
-            {
-                StartCoroutine(WallDash());
             }
             if (Input.GetKeyDown(wallJumpKey))
                 WallJump();
@@ -144,26 +139,6 @@ public class WallSticking : MonoBehaviour
         
         if(!(wallLeft && horizontalInput > 0) && !(wallRight && horizontalInput < 0))
             rb.AddForce(-wallNormal * 100, ForceMode.Force);
-    }
-
-    private IEnumerator WallDash()
-    {
-        pm.readyToDash = false; // Prevent multiple dashes
-        pm.wallrunning = false; // Stop wall-running
-        pm.state = PlayerMovement.MovementState.dashing;
-
-        Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
-        Vector3 dashDirection = wallNormal * -1.5f + pm.orientation.forward; // Dash away from wall
-
-        rb.linearVelocity = Vector3.zero;
-        rb.AddForce(dashDirection.normalized * pm.dashSpeed, ForceMode.Impulse);
-
-        yield return new WaitForSeconds(pm.dashTime);
-
-        pm.state = pm.grounded ? PlayerMovement.MovementState.walking : PlayerMovement.MovementState.air;
-
-        yield return new WaitForSeconds(pm.dashCooldown);
-        pm.readyToDash = true; // Re-enable dashing
     }
 
     private void EndWallRun()

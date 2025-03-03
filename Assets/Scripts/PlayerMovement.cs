@@ -11,14 +11,14 @@ public class PlayerMovement : MonoBehaviour
     public float wallrunSpeed;
     public float speedIncreaseMultiplier;
     public float slopeIncreaseMultiplier;
-    public Camera playerCamera;
+    public Transform playerCameraHolder;
     public float groundDrag;
+    private bool readyToJump = true;
 
     [Header("Jumping")]
     public float jumpForce;
     public float jumpCooldown;
     public float airMultiplier;
-    bool readyToJump;
 
     [Header("Crouching")]
     public float crouchSpeed;
@@ -26,10 +26,10 @@ public class PlayerMovement : MonoBehaviour
     private float startYScale;
 
     [Header("Dashing")]
-    [Header("Dashing")]
-    public float dashSpeed = 50f;
+    public float dashSpeed = 200f;
     public float dashTime = 0.2f;
     public float dashCooldown = 1.0f;
+    private float dashCooldownTimer;
     public bool readyToDash = true;
 
 
@@ -47,6 +47,8 @@ public class PlayerMovement : MonoBehaviour
     public float maxSlopeAngle;
     private RaycastHit slopeHit;
     private bool exitingSlope;
+
+    private int i = 1;
 
 
     public Transform orientation;
@@ -73,12 +75,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        playerCamera = Camera.main;
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-
-        readyToJump = true;
-
         startYScale = transform.localScale.y;
     }
 
@@ -117,13 +115,6 @@ public class PlayerMovement : MonoBehaviour
 
             Invoke(nameof(ResetJump), jumpCooldown);
         }
-        // start dashing
-        if (Input.GetKeyDown(dashingKey) && readyToDash && !wallrunning)
-        {
-            StartCoroutine(Dash());
-        }
-
-
 
         // start crouch
         if (Input.GetKeyDown(crouchKey) && horizontalInput == 0 && verticalInput == 0)
@@ -159,11 +150,14 @@ public class PlayerMovement : MonoBehaviour
             desiredMoveSpeed = crouchSpeed;
         }
 
-        else if (!wallrunning && !grounded && Input.GetKey(dashingKey))//dashing
+        else if (!wallrunning && !grounded && Input.GetKey(dashingKey) && readyToDash)//dashing
         {
+            readyToDash = false;
+            dashCooldownTimer = dashCooldown;
+            Debug.Log("entered" + i++);
             state = MovementState.dashing;
             moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-            rb.AddForce(moveDirection.normalized*moveSpeed*3f, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized*dashSpeed*75, ForceMode.Force);
         }
 
         // Mode - Walking
@@ -193,46 +187,25 @@ public class PlayerMovement : MonoBehaviour
         }
 
         lastDesiredMoveSpeed = desiredMoveSpeed;
+
+        if (dashCooldownTimer <= 0)
+        {
+            readyToDash = true;
+        }
+        else
+        {
+            dashCooldownTimer -= Time.deltaTime;
+        }
     }
 
-    private IEnumerator Dash()
+    private IEnumerator DashTimer()
     {
-        if (playerCamera == null)
-        {
-            Debug.LogError("No Player Camera found! Assign it in the Inspector.");
-            yield break;
-        }
-
         readyToDash = false;
-        rb.useGravity = false;
 
-        //  Get exact direction the camera is facing
-        Vector3 dashDirection = playerCamera.transform.forward;
-
-        //  Fix: Prevent downward tilt when looking forward
-        if (Mathf.Abs(dashDirection.y) < 0.1f)  // If looking mostly forward, remove downward influence
-        {
-            dashDirection.y = 0f;
-        }
-
-        //  Normalize direction to ensure equal dash distance
-        dashDirection = dashDirection.normalized;
-
-        //  Apply force instead of overriding velocity (more natural movement)
-        rb.linearVelocity = Vector3.zero;  // Reset velocity before dash
-        rb.AddForce(dashDirection * dashSpeed, ForceMode.Impulse);
-
-        Debug.Log("Dashing in Direction: " + dashDirection + " | Speed: " + dashSpeed);
-
-        yield return new WaitForSeconds(dashTime);
-
-        //  Reset movement after dash
-        rb.useGravity = true;
-        rb.linearVelocity = Vector3.zero;
-
-        yield return new WaitForSeconds(dashCooldown);
-
+        yield return new WaitForSeconds(1f);
+        
         readyToDash = true;
+        Debug.Log(readyToDash);
     }
 
 
@@ -351,14 +324,5 @@ public class PlayerMovement : MonoBehaviour
         float mult = Mathf.Pow(10.0f, (float)digits);
         return Mathf.Round(value * mult) / mult;
     }
-
-    
-
-
-
-
-
-
-
 }
 

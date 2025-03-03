@@ -10329,7 +10329,6 @@ MonoBehaviour:
   wallCheckDistance: 0.7
   minJumpHeight: 2
   orientation: {fileID: 371923137}
-  pm: {fileID: 0}
 --- !u!114 &1270870442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10346,9 +10345,9 @@ MonoBehaviour:
   wallrunSpeed: 8.5
   speedIncreaseMultiplier: 1.5
   slopeIncreaseMultiplier: 2.5
-  playerCamera: {fileID: 0}
+  playerCameraHolder: {fileID: 1075506424}
   groundDrag: 4
-  jumpForce: 12
+  jumpForce: 12.25
   jumpCooldown: 0.25
   airMultiplier: 0.4
   crouchSpeed: 3.5
