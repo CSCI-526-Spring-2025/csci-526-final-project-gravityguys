@@ -83,9 +83,9 @@ public class WallSticking : MonoBehaviour
             }
             if(wallStickingTimer > 0)
                 wallStickingTimer -= Time.deltaTime;
-                Debug.Log("wall sticiking: " + wallStickingTimer);
+            Debug.Log("wall sticiking: " + wallStickingTimer);
             if (wallStickingTimer <= 0 && pm.wallrunning)
-            {
+            {   
                 exitingWall = true;
                 exitWallTimer = exitWallTime;
             }
@@ -107,7 +107,7 @@ public class WallSticking : MonoBehaviour
         {
             if (pm.wallrunning)
             {
-                EndWallRun();
+                  EndWallRun();
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -34,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     [Header("Keybinds")]
-    public KeyCode jumpKey = KeyCode.Space;
+    public KeyCode jumpKey = KeyCode.Space; 
     public KeyCode dashingKey = KeyCode.LeftShift;
     public KeyCode crouchKey = KeyCode.LeftControl;
 
@@ -80,10 +81,43 @@ public class PlayerMovement : MonoBehaviour
         startYScale = transform.localScale.y;
     }
 
+    private float maxStuckTimeAllowed = 2f, stuckTimer = 0f;
+    private Vector3 lastPosition;
+
+    private bool IsStuck()
+    {
+        if (Input.GetKey(KeyCode.W))
+        {
+            Debug.Log("lastPositionStored:" + lastPosition);
+            Debug.Log("CurPos:" + transform.position);
+            
+            
+            stuckTimer += Time.deltaTime;
+
+            if (stuckTimer >= maxStuckTimeAllowed-1f &&  stuckTimer <= maxStuckTimeAllowed-0.5f)
+            {
+                lastPosition = transform.position;
+            }
+            else if (stuckTimer >= maxStuckTimeAllowed && Vector3.Distance(transform.position, lastPosition) <= 0.1f)
+            {
+                stuckTimer = 0f;
+                return true;
+            }
+        }
+        else
+        {
+            stuckTimer = 0f;
+        }
+        return false;
+        
+    }
+    
     private void Update()
     {
+        if(IsStuck())
+            Jump();
         // ground check
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.5f, whatIsGround);
 
         MyInput();
         SpeedControl();
