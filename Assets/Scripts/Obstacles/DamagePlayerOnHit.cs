@@ -9,6 +9,7 @@ public class DamagePlayerOnHit : MonoBehaviour
             GameObject respawner = GameObject.FindGameObjectWithTag("Respawn");
             if (respawner)
                 respawner.BroadcastMessage("RespawnPlayer");
+                AnalyticsManager.Instance.IncrementPlayerDeath();
         }
     }
 }

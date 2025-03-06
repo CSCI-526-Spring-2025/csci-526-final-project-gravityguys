@@ -30,8 +30,12 @@ public class FadeWin : MonoBehaviour
             //Respawn when player reaches goal
             GameObject respawner = GameObject.FindGameObjectWithTag("Respawn");
             if (respawner)
-                respawner.BroadcastMessage("RespawnPlayer");
-            
+            {
+            	AnalyticsManager.Instance.PlayerWon();
+               	respawner.BroadcastMessage("RespawnPlayer");
+            }
+
+
 
             //Make the goal fade out
             StartCoroutine(FadeOutWin());
