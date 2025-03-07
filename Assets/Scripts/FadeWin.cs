@@ -38,9 +38,6 @@ public class FadeWin : MonoBehaviour
 
             //Make the goal fade out
             StartCoroutine(FadeOutWin());
-            //Enable Instruction1 while disabling rest.
-            InstructionReveal.ResetAllInstructions();
-
         }
     }
 
@@ -55,7 +52,8 @@ public class FadeWin : MonoBehaviour
             canvasGroup.alpha -= Time.deltaTime * fadeSpeed; // Fade out smoothly
             yield return null;
         }
-
+        //Enable Instruction1 while disabling rest.
+        InstructionReveal.ResetAllInstructions();
         winTextUI.SetActive(false); // Hide text completely
 
     }
