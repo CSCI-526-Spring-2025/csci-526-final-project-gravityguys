@@ -8,7 +8,7 @@
   - Layers:
     - Default, TransparentFX, Ignore Raycast, Water, UI, groundLayer, wallLayer, Editor Only
 - Active game object:
-  - Name: Laser
+  - Name: Bottom Bound
   - Tag: Untagged
   - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->

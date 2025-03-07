@@ -53,7 +53,8 @@ public class InstructionReveal : MonoBehaviour
     public static void ResetAllInstructions()
     {
         foreach (GameObject inst in FindObjectsOfType<GameObject>(true))
-            inst.SetActive(false);
+            if(inst.tag == "Instruction")
+                inst.SetActive(false);
         EnableInactiveGameObject("Instruction1");
     }
 }
