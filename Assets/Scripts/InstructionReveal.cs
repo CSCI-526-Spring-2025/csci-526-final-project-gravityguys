@@ -19,7 +19,7 @@ public class InstructionReveal : MonoBehaviour
 
     private void SetNextInstructionActive()
     {
-        if (gameObject.name == "Instruction7")
+        if (gameObject.name == "Instruction6")//last instruction.
             return;
         int currentInstruction = Convert.ToInt32(gameObject.name.Substring(gameObject.name.Length - 1, 1)) + 1;
         String nextInstructionName = "Instruction" + currentInstruction;
@@ -27,6 +27,11 @@ public class InstructionReveal : MonoBehaviour
         {
             if(inst.name == nextInstructionName)
             {
+                if (nextInstructionName == "Instruction5")
+                {
+                   EnableInactiveGameObject("Instruction_Beware");
+                   EnableInactiveGameObject("Instruction_Climb");
+                }
                 inst.SetActive(true);
                 return;
             }
@@ -34,9 +39,21 @@ public class InstructionReveal : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private static void EnableInactiveGameObject(String gameObjectName, bool shouldEnable = true)
     {
-        
+        foreach (GameObject inst in FindObjectsOfType<GameObject>(true))
+        {
+            if (inst.name == gameObjectName)
+            {
+                inst.SetActive(shouldEnable);
+            }
+        }
+    }
+
+    public static void ResetAllInstructions()
+    {
+        foreach (GameObject inst in FindObjectsOfType<GameObject>(true))
+            inst.SetActive(false);
+        EnableInactiveGameObject("Instruction1");
     }
 }

@@ -38,7 +38,8 @@ public class FadeWin : MonoBehaviour
 
             //Make the goal fade out
             StartCoroutine(FadeOutWin());
-
+            //Enable Instruction1 while disabling rest.
+            InstructionReveal.ResetAllInstructions();
 
         }
     }
