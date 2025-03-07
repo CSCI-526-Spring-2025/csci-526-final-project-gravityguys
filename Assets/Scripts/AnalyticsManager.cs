@@ -12,6 +12,8 @@ public class AnalyticsManager : MonoBehaviour
     private int deathNum = 0;
     private bool completedLevel = false;
 
+    private string lastPlatformTouched = "Unknown";
+
     async void Awake()
     {
         if (Instance == null)
@@ -33,11 +35,21 @@ public class AnalyticsManager : MonoBehaviour
         Debug.Log("✅ Unity Analytics Initialized Successfully!");
     }
 
-    // Track player death
+    public void SetLastPlatformTouched(string platformName)
+    {
+        lastPlatformTouched = platformName;
+        Debug.Log($"🟢 Last Platform Updated: {lastPlatformTouched}");
+    }
+
     public void IncrementPlayerDeath()
     {
         deathNum++;
         Debug.Log($"☠️ Player Died! Total Deaths: {deathNum}");
+
+        // Send analytics event for last touched platform before death
+        LastPlatformTouchedEvent lastPlatformTouchedEvent = new LastPlatformTouchedEvent(levelNum, lastPlatformTouched);
+        AnalyticsService.Instance.RecordEvent(lastPlatformTouchedEvent);
+        Debug.Log($"📊 Analytics Event Sent: Last Platform Touched Before Death - {lastPlatformTouched}");
     }
 
     // Track when the player reaches the goal (completing the level)
@@ -46,7 +58,6 @@ public class AnalyticsManager : MonoBehaviour
         completedLevel = true;
         Debug.Log($"🎉 Player Won! Total Deaths: {deathNum}");
         SendLevelAnalytics();
-
     }
 
     // Track and send data when the player quits or moves to the next level
@@ -64,10 +75,10 @@ public class AnalyticsManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-    	if (deathNum > 0)
-    	{
-    		SendLevelAnalytics(); // Ensure data is sent when the game is closed
-    	}
+        if (deathNum > 0)
+        {
+            SendLevelAnalytics(); // Ensure data is sent when the game is closed
+        }
     }
 }
 
@@ -78,5 +89,14 @@ public class DeathCounterEvent : Unity.Services.Analytics.Event
         SetParameter("zCompletedLevel", completedLevel);
         SetParameter("zDeathNum", deathNum);
         SetParameter("zLevelNum", levelNum);
+    }
+}
+
+public class LastPlatformTouchedEvent : Unity.Services.Analytics.Event
+{
+    public LastPlatformTouchedEvent(int levelNum, string platformName) : base("lastPlatformTouched")
+    {
+    	SetParameter("zLevelNum", levelNum);
+        SetParameter("zPlatformName", platformName);
     }
 }

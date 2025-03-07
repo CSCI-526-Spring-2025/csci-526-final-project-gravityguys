@@ -6,9 +6,9 @@ public class WallSticking : MonoBehaviour
 
     [SerializeField] private LayerMask wallLayerMask, groundLayerMask;
 
-    [SerializeField] private float maxWallRunTime, wallClimbDescendSpeed, 
+    [SerializeField] private float maxWallRunTime, wallClimbDescendSpeed,
                                    wallJumpUpForce, wallJumpSideForce, exitWallTime;
-    
+
     [SerializeField] private KeyCode upwardsWallRunKey = KeyCode.LeftShift,
                                      downwardsWallRunKey = KeyCode.LeftControl,
                                      wallJumpKey = KeyCode.Space;
@@ -25,7 +25,7 @@ public class WallSticking : MonoBehaviour
     private PlayerMovement pm;
 
     private Rigidbody rb;
-    
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -64,7 +64,7 @@ public class WallSticking : MonoBehaviour
 
     private void StateMachine()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal"); 
+        horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
         upwardsWallRunning = Input.GetKey(upwardsWallRunKey);
         downwardsWallRunning = Input.GetKey(downwardsWallRunKey);
@@ -73,7 +73,7 @@ public class WallSticking : MonoBehaviour
         {
             exitingWall = false;
         }
-        
+
         if ((wallLeft || wallRight) && AboveGround() && verticalInput > 0 && !exitingWall)//wall run
         {
             lastWallHit = curWallHit;
@@ -85,7 +85,7 @@ public class WallSticking : MonoBehaviour
                 wallStickingTimer -= Time.deltaTime;
             Debug.Log("wall sticiking: " + wallStickingTimer);
             if (wallStickingTimer <= 0 && pm.wallrunning)
-            {   
+            {
                 exitingWall = true;
                 exitWallTimer = exitWallTime;
             }
@@ -116,6 +116,7 @@ public class WallSticking : MonoBehaviour
     {
         pm.wallrunning = true;
         wallStickingTimer = maxWallRunTime;
+        AnalyticsManager.Instance.SetLastPlatformTouched(curWallHit.collider.gameObject.name);
     }
 
     private void WallRunningMovement()
@@ -129,14 +130,14 @@ public class WallSticking : MonoBehaviour
         {
             wallForward = - wallForward;
         }
-        
+
         rb.AddForce(wallForward * wallRunForce, ForceMode.Force);
-        
+
         if(upwardsWallRunning)
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, wallClimbDescendSpeed, rb.linearVelocity.z);
         if(downwardsWallRunning)
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, -wallClimbDescendSpeed, rb.linearVelocity.z);
-        
+
         if(!(wallLeft && horizontalInput > 0) && !(wallRight && horizontalInput < 0))
             rb.AddForce(-wallNormal * 100, ForceMode.Force);
     }
@@ -152,9 +153,9 @@ public class WallSticking : MonoBehaviour
         exitWallTimer = exitWallTime;
         Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal,
                 force2Apply = transform.up * wallJumpUpForce + wallNormal * wallJumpSideForce;
-        
+
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0.0f, rb.linearVelocity.z);
         rb.AddForce(force2Apply, ForceMode.Impulse);
-        
+
     }
 }
