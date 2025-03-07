@@ -7,6 +7,12 @@ public class Respawner : MonoBehaviour
 
     private CheckPoint mark;
 
+    private Vector3 originalLocation;
+    private void Start()
+    {
+        originalLocation = this.transform.position;
+    }
+
     private void RespawnPlayer()
     {
         Player.transform.position = Respawn.transform.position;
@@ -21,5 +27,10 @@ public class Respawner : MonoBehaviour
         Respawn.transform.position = mark.transform.position;
         //Respawn.transform.rotation = mark.transform.rotation;
         Debug.Log("Set CheckPoint");
+    }
+
+    private void ResetSpawnLocation()
+    {
+        this.transform.position = originalLocation;
     }
 }
