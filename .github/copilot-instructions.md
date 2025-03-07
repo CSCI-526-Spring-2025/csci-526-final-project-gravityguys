@@ -4,11 +4,11 @@
 - Active scene:
   - Name: TutorialLevel
   - Tags:
-    - Untagged, Respawn, Finish, EditorOnly, MainCamera, Player, GameController
+    - Untagged, Respawn, Finish, EditorOnly, MainCamera, Player, GameController, Instruction
   - Layers:
     - Default, TransparentFX, Ignore Raycast, Water, UI, groundLayer, wallLayer, Editor Only
 - Active game object:
-  - Name: Bottom Bound
-  - Tag: Untagged
+  - Name: Instruction5
+  - Tag: Instruction
   - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
