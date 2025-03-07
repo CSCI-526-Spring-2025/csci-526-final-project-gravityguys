@@ -4,7 +4,7 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Ground
+  - Instruction
   layers:
   - Default
   - TransparentFX
@@ -12,6 +12,8 @@ TagManager:
   - 
   - Water
   - UI
+  - groundLayer
+  - wallLayer
   - 
   - 
   - 
@@ -35,9 +37,7 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - EditorOnly
+  - Editor Only
   m_SortingLayers:
   - name: Default
     uniqueID: 0
