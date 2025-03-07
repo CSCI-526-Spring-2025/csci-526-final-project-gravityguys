@@ -36,11 +36,8 @@ public class FadeWin : MonoBehaviour
                 respawner.BroadcastMessage("RespawnPlayer");
             }
 
-
             //Make the goal fade out
             StartCoroutine(FadeOutWin());
-
-
         }
     }
 

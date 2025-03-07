@@ -11,8 +11,9 @@ public class AnalyticsManager : MonoBehaviour
 
     private int deathNum = 0;
     private bool completedLevel = false;
-
     private string lastPlatformTouched = "Unknown";
+
+    private float levelStartTime;
 
     async void Awake()
     {
@@ -26,6 +27,8 @@ public class AnalyticsManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        StartLevelTimer(); // Start tracking time when the level begins
     }
 
     private async Task InitializeAnalytics()
@@ -33,6 +36,12 @@ public class AnalyticsManager : MonoBehaviour
         await UnityServices.InitializeAsync();
         AnalyticsService.Instance.StartDataCollection();
         Debug.Log("✅ Unity Analytics Initialized Successfully!");
+    }
+
+    private void StartLevelTimer()
+    {
+        levelStartTime = Time.time; // Store the time when the level starts
+        Debug.Log($"⏳ Level {levelNum} started at {levelStartTime} seconds.");
     }
 
     public void SetLastPlatformTouched(string platformName)
@@ -46,17 +55,22 @@ public class AnalyticsManager : MonoBehaviour
         deathNum++;
         Debug.Log($"☠️ Player Died! Total Deaths: {deathNum}");
 
-        // Send analytics event for last touched platform before death
         LastPlatformTouchedEvent lastPlatformTouchedEvent = new LastPlatformTouchedEvent(levelNum, lastPlatformTouched);
         AnalyticsService.Instance.RecordEvent(lastPlatformTouchedEvent);
         Debug.Log($"📊 Analytics Event Sent: Last Platform Touched Before Death - {lastPlatformTouched}");
     }
 
-    // Track when the player reaches the goal (completing the level)
     public void PlayerWon()
     {
         completedLevel = true;
-        Debug.Log($"🎉 Player Won! Total Deaths: {deathNum}");
+
+        int timeToCompleteLevel = Mathf.RoundToInt(Time.time - levelStartTime);
+        Debug.Log($"🎉 Player Won! Level Completed in {timeToCompleteLevel} seconds. Total Deaths: {deathNum}");
+
+        TimeToCompleteLevelEvent timeEvent = new TimeToCompleteLevelEvent(levelNum, timeToCompleteLevel);
+        AnalyticsService.Instance.RecordEvent(timeEvent);
+        Debug.Log($"📊 Analytics Event Sent: Time To Complete Level - {timeToCompleteLevel} seconds");
+
         SendLevelAnalytics();
     }
 
@@ -71,13 +85,14 @@ public class AnalyticsManager : MonoBehaviour
         // Reset for the next level
         deathNum = 0;
         completedLevel = false;
+        StartLevelTimer();
     }
 
     private void OnApplicationQuit()
     {
         if (deathNum > 0)
         {
-            SendLevelAnalytics(); // Ensure data is sent when the game is closed
+            SendLevelAnalytics();
         }
     }
 }
@@ -96,7 +111,16 @@ public class LastPlatformTouchedEvent : Unity.Services.Analytics.Event
 {
     public LastPlatformTouchedEvent(int levelNum, string platformName) : base("lastPlatformTouched")
     {
-    	SetParameter("zLevelNum", levelNum);
+        SetParameter("zLevelNum", levelNum);
         SetParameter("zPlatformName", platformName);
+    }
+}
+
+public class TimeToCompleteLevelEvent : Unity.Services.Analytics.Event
+{
+    public TimeToCompleteLevelEvent(int levelNum, int timeInSeconds) : base("timeToCompleteLevel")
+    {
+        SetParameter("zLevelNum", levelNum);
+        SetParameter("zTimeInSeconds", timeInSeconds);
     }
 }
