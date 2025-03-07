@@ -35,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     [Header("Keybinds")]
-    public KeyCode jumpKey = KeyCode.Space; 
+    public KeyCode jumpKey = KeyCode.Space;
     public KeyCode dashingKey = KeyCode.LeftShift;
     public KeyCode crouchKey = KeyCode.LeftControl;
 
@@ -70,7 +70,7 @@ public class PlayerMovement : MonoBehaviour
         crouching,
         air
     }
-    
+
     public bool crouching;
     public bool wallrunning;
 
@@ -90,8 +90,8 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.Log("lastPositionStored:" + lastPosition);
             Debug.Log("CurPos:" + transform.position);
-            
-            
+
+
             stuckTimer += Time.deltaTime;
 
             if (stuckTimer >= maxStuckTimeAllowed-1f &&  stuckTimer <= maxStuckTimeAllowed-0.5f)
@@ -109,15 +109,17 @@ public class PlayerMovement : MonoBehaviour
             stuckTimer = 0f;
         }
         return false;
-        
+
     }
-    
+
     private void Update()
     {
         if(IsStuck())
             Jump();
-        // ground check
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.5f, whatIsGround);
+
+        // Ground check with RaycastHit to store collision details
+        RaycastHit groundHit;
+        grounded = Physics.Raycast(transform.position, Vector3.down, out groundHit, playerHeight * 0.5f + 0.5f, whatIsGround);
 
         MyInput();
         SpeedControl();
@@ -125,9 +127,14 @@ public class PlayerMovement : MonoBehaviour
 
         // handle drag
         if (grounded)
+        {
             rb.linearDamping = groundDrag;
+            AnalyticsManager.Instance.SetLastPlatformTouched(groundHit.collider.gameObject.name);
+        }
         else
+        {
             rb.linearDamping = 0;
+        }
     }
 
     private void FixedUpdate()
@@ -237,7 +244,7 @@ public class PlayerMovement : MonoBehaviour
         readyToDash = false;
 
         yield return new WaitForSeconds(1f);
-        
+
         readyToDash = true;
         Debug.Log(readyToDash);
     }
@@ -359,4 +366,3 @@ public class PlayerMovement : MonoBehaviour
         return Mathf.Round(value * mult) / mult;
     }
 }
-
