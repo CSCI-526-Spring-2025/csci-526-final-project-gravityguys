@@ -281,19 +281,19 @@ namespace Meryel.UnityCodeAssist.Editor
             foreach (var sceneGUID in AssetDatabase.FindAssets("t:Scene", new string[] { "Assets" }))
             {
                 var scenePath = AssetDatabase.GUIDToAssetPath(sceneGUID);
-                Debug.Log("scenePath: " + scenePath);
+                //Debug.Log("scenePath: " + scenePath);
 
                 //EditorSceneManager.OpenScene(scenePath);
                 //var scene = EditorSceneManager.GetActiveScene();
             }
 
             var assets = AssetDatabase.FindAssets("Deneme_OtherScene");
-            Debug.Log("Assets: " + assets.Length);
+            //Debug.Log("Assets: " + assets.Length);
 
             foreach (var assetGuid in assets)
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(assetGuid);
-                Debug.Log("Asset: " + assetGuid + " " + assetPath);
+                //Debug.Log("Asset: " + assetGuid + " " + assetPath);
             }
         }
 

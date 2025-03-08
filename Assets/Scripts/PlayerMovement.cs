@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -73,12 +75,58 @@ public class PlayerMovement : MonoBehaviour
 
     public bool crouching;
     public bool wallrunning;
+    private PlayerInput playerInput; 
+    private Vector2 moveInput;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        playerInput = GetComponent<PlayerInput>();
         rb.freezeRotation = true;
         startYScale = transform.localScale.y;
+    }
+    
+    private float numClicks = 0f, clickTime = 0f, clickDelayAllowed = .5f;
+    
+    private void HandleMobileActions()
+    {
+        if (playerInput.actions["JumpDash"].triggered)
+        {
+            if (numClicks++ == 0)
+                Invoke("ResetNumClicks", clickDelayAllowed);
+            Debug.Log("clicks: " + numClicks);
+            
+            if (numClicks == 1)
+            {
+                SingleClick();
+            }else if (numClicks == 2)
+            {
+                DoubleClick();
+            }
+        }
+    }
+
+    private void ResetNumClicks()
+    {
+        numClicks = 0;
+    }
+
+    private void DoubleClick()
+    {
+        if(readyToDash)
+            Dash();
+    }
+
+    private void SingleClick()
+    {
+        if(grounded)
+            Jump();
+        if (wallrunning)
+        {
+            WallSticking ws = GetComponent<WallSticking>();
+            ws.Invoke("WallJump", 0f);
+        }
+            
     }
 
     private float maxStuckTimeAllowed = 2f, stuckTimer = 0f;
@@ -88,8 +136,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.W))
         {
-            Debug.Log("lastPositionStored:" + lastPosition);
-            Debug.Log("CurPos:" + transform.position);
+            //Debug.Log("lastPositionStored:" + lastPosition);
+            //Debug.Log("CurPos:" + transform.position);
 
 
             stuckTimer += Time.deltaTime;
@@ -114,6 +162,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        HandleMobileActions();
         if(IsStuck())
             Jump();
 
@@ -142,10 +191,20 @@ public class PlayerMovement : MonoBehaviour
         MovePlayer();
     }
 
+    private float GetSignOrZero(float a)
+    {
+        if (a == 0)
+            return 0f;
+        if (a < 0)
+            return -1f;
+        return 1f;
+    }
+
     private void MyInput()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+        moveInput = playerInput.actions["Move"].ReadValue<Vector2>();
+        horizontalInput = GetSignOrZero(moveInput.x);
+        verticalInput = GetSignOrZero(moveInput.y);
 
         // when to jump
         if (Input.GetKey(jumpKey) && readyToJump && grounded)
@@ -175,6 +234,15 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void Dash()
+    {
+        readyToDash = false;
+        dashCooldownTimer = dashCooldown;
+        state = MovementState.dashing;
+        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        rb.AddForce(moveDirection.normalized*dashSpeed*75, ForceMode.Force);
+    }
+
     private void StateHandler()
     {
         // Mode - Wallrunning
@@ -193,12 +261,7 @@ public class PlayerMovement : MonoBehaviour
 
         else if (!wallrunning && !grounded && Input.GetKey(dashingKey) && readyToDash)//dashing
         {
-            readyToDash = false;
-            dashCooldownTimer = dashCooldown;
-            Debug.Log("entered" + i++);
-            state = MovementState.dashing;
-            moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-            rb.AddForce(moveDirection.normalized*dashSpeed*75, ForceMode.Force);
+            Dash();
         }
 
         // Mode - Walking
@@ -213,6 +276,9 @@ public class PlayerMovement : MonoBehaviour
         {
             state = MovementState.air;
         }
+        
+        //Debug.Log("Cur State: " + state);
+        
 
         // check if desired move speed has changed drastically
         if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0)
@@ -246,7 +312,7 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         readyToDash = true;
-        Debug.Log(readyToDash);
+        //Debug.Log(readyToDash);
     }
 
 
@@ -283,6 +349,8 @@ public class PlayerMovement : MonoBehaviour
     {
         // calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+
+        moveSpeed *= 2;
 
         // on slope
         if (OnSlope() && !exitingSlope)
