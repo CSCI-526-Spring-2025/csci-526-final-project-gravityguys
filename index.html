@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Redirect</title>
+    <script>
+        function redirectToBuild() {
+            let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            let override = localStorage.getItem("override");
+
+            if (override) {
+                window.location.href = override;
+            } else {
+                if (isMobile) {
+                    window.location.href = "https://naltinbas.github.io/uniquety/GravityShiftMobile/"; // For mobile build URL
+                } else {
+                    window.location.href = "https://naltinbas.github.io/uniquety/GravityShift/"; // For PC build URL
+                }
+            }
+        }
+
+        function setOverride(version) {
+            if (version === "mobile") {
+                localStorage.setItem("override", "mobile-build/index.html");
+                window.location.href = "mobile-build/index.html";
+            } else {
+                localStorage.setItem("override", "pc-build/index.html");
+                window.location.href = "pc-build/index.html";
+            }
+        }
+
+        function clearOverride() {
+            localStorage.removeItem("override");
+            alert("Device auto-detection restored. Refresh the page.");
+        }
+    </script>
+</head>
+<body onload="redirectToBuild()">
+    <h1>Redirecting to the appropriate version of the game...</h1>
+    <p>If you are not redirected, choose your version below:</p>
+    <button onclick="setOverride('pc')">Play PC Version</button>
+    <button onclick="setOverride('mobile')">Play Mobile Version</button>
+    <button onclick="clearOverride()">Reset to Auto-Detect</button>
+</body>
+</html>
