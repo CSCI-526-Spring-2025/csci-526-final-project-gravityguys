@@ -97,7 +97,6 @@ public class PlayerMovement : MonoBehaviour
             //Debug.Log("lastPositionStored:" + lastPosition);
             //Debug.Log("CurPos:" + transform.position);
 
-
             stuckTimer += Time.deltaTime;
 
             if (stuckTimer >= maxStuckTimeAllowed-1f &&  stuckTimer <= maxStuckTimeAllowed-0.5f)
@@ -120,7 +119,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if(IsStuck())
+        //Stop physics if game is paused.
+        Time.timeScale = PauseScript.IsGamePaused ? 0 : 1;
+
+
+        if (IsStuck())
             Jump();
 
         // Ground check with RaycastHit to store collision details
@@ -138,8 +141,9 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.linearDamping = groundDrag;
             AnalyticsManager.Instance.SetLastPlatformTouched(groundHit.collider.gameObject.name);
-        } 
-        else if (wallrunning) {
+        }
+        else if (wallrunning)
+        {
             rb.linearDamping = groundDrag;
             AnalyticsManager.Instance.SetLastPlatformTouched(currentWallHit.collider.gameObject.name);
         }
@@ -147,12 +151,16 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.linearDamping = 0;
         }
+        
     }
 
     private void FixedUpdate()
     {
-        MovePlayer();
-    }
+        if (!PauseScript.IsGamePaused)
+        {
+            MovePlayer();
+        }
+        }
 
     private void MyInput()
     {
@@ -313,9 +321,8 @@ public class PlayerMovement : MonoBehaviour
             if (rb.linearVelocity.y > 0)
                 rb.AddForce(Vector3.down * 80f, ForceMode.Force);
         }
-        if (wallrunning)
+        else if (wallrunning)
         {
-            Vector3 wallNormal = currentWallHit.normal;
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
         }
         // on ground
