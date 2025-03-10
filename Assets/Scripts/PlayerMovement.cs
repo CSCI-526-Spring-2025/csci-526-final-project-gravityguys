@@ -94,6 +94,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.W))
         {
+            //Debug.Log("lastPositionStored:" + lastPosition);
+            //Debug.Log("CurPos:" + transform.position);
             stuckTimer += Time.deltaTime;
 
             if (stuckTimer >= maxStuckTimeAllowed-1f &&  stuckTimer <= maxStuckTimeAllowed-0.5f)
@@ -116,6 +118,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        //Stop physics if game is paused.
+        Time.timeScale = PauseScript.IsGamePaused ? 0 : 1;
         HandleStuck();
         HandleDrag();
         MyInput();
@@ -156,8 +160,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        MovePlayer();
-    }
+        if (!PauseScript.IsGamePaused)
+        {
+            MovePlayer();
+        }
+        }
 
     private void MyInput()
     {
