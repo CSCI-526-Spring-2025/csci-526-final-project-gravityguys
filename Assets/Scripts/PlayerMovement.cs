@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Ground Check")]
     public float playerHeight;
     public LayerMask whatIsGround;
-    public bool grounded;
+    public bool isGrounded;
 
     [Header("Slope Handling")]
     public float maxSlopeAngle;
@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask wallLayerMask;
     public LayerMask groundLayerMask;
     public float wallCheckDistance = 1;
-    private RaycastHit currentWallHit, lastWallHit;
+    private RaycastHit currentWallHit, lastWallHit, groundHit;
     public bool wallrunning;
 
     [Header("Other")]
@@ -96,7 +96,6 @@ public class PlayerMovement : MonoBehaviour
         {
             //Debug.Log("lastPositionStored:" + lastPosition);
             //Debug.Log("CurPos:" + transform.position);
-
             stuckTimer += Time.deltaTime;
 
             if (stuckTimer >= maxStuckTimeAllowed-1f &&  stuckTimer <= maxStuckTimeAllowed-0.5f)
@@ -121,37 +120,42 @@ public class PlayerMovement : MonoBehaviour
     {
         //Stop physics if game is paused.
         Time.timeScale = PauseScript.IsGamePaused ? 0 : 1;
-
-
-        if (IsStuck())
-            Jump();
-
-        // Ground check with RaycastHit to store collision details
-        RaycastHit groundHit;
-        grounded = Physics.Raycast(transform.position, Vector3.down, out groundHit, playerHeight * 0.5f + 0.5f, whatIsGround);
-
+        HandleStuck();
+        HandleDrag();
         MyInput();
         SpeedControl();
         CheckForWall();
-
         StateHandler();
+        HandleAnalytics();
+    }
 
-        // handle drag
-        if (grounded)
+    private void HandleStuck()
+    {
+        if(IsStuck())
+            Jump();
+    }
+
+    private void HandleAnalytics()
+    {
+        RaycastHit hit = isGrounded ? groundHit
+                            : (wallrunning ? lastWallHit 
+                                : default);
+        if (hit.point != Vector3.zero)//either ground or wall hit
         {
-            rb.linearDamping = groundDrag;
-            AnalyticsManager.Instance.SetLastPlatformTouched(groundHit.collider.gameObject.name);
+            AnalyticsManager.Instance.SetLastPlatformTouched(hit.collider.gameObject.name);
         }
-        else if (wallrunning)
-        {
-            rb.linearDamping = groundDrag;
-            AnalyticsManager.Instance.SetLastPlatformTouched(currentWallHit.collider.gameObject.name);
-        }
-        else
-        {
-            rb.linearDamping = 0;
-        }
-        
+                
+    }
+
+    private void HandleDrag()
+    {
+        isGrounded = Physics.Raycast(
+                    transform.position, 
+                    Vector3.down, 
+                    out groundHit, 
+                    playerHeight * 0.5f + 0.5f, 
+                    whatIsGround);
+        rb.linearDamping = (isGrounded || wallrunning) ? groundDrag : 0;
     }
 
     private void FixedUpdate()
@@ -168,7 +172,7 @@ public class PlayerMovement : MonoBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
 
         // when to jump
-        if (Input.GetKey(jumpKey) && readyToJump && (grounded || wallrunning))
+        if (Input.GetKey(jumpKey) && readyToJump && (isGrounded || wallrunning))
         {
             readyToJump = false;
 
@@ -213,7 +217,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Mode - Dashing 
-        else if (!wallrunning && !grounded && Input.GetKey(dashingKey) && readyToDash)
+        else if (!wallrunning && !isGrounded && Input.GetKey(dashingKey) && readyToDash)
         {
             readyToDash = false;
             dashCooldownTimer = dashCooldown;
@@ -224,7 +228,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Mode - Walking
-        else if (grounded)
+        else if (isGrounded)
         {
             state = MovementState.walking;
             desiredMoveSpeed = walkSpeed;
@@ -301,18 +305,11 @@ public class PlayerMovement : MonoBehaviour
     private void MovePlayer()
     {
         // calculate movement direction
-        if(wallrunning)
-        {
-            rb.useGravity = false;
-            moveDirection = playerCameraHolder.forward * verticalInput + playerCameraHolder.right * horizontalInput;
-        }
-        else
-        {
-            rb.useGravity = true;
-            moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-        }
-        
 
+        rb.useGravity = !wallrunning;
+        Transform moveTransform = wallrunning ? playerCameraHolder : orientation;
+        moveDirection = moveTransform.forward * verticalInput + moveTransform.right * horizontalInput;
+        
         // on slope
         if (OnSlope() && !exitingSlope)
         {
@@ -321,18 +318,10 @@ public class PlayerMovement : MonoBehaviour
             if (rb.linearVelocity.y > 0)
                 rb.AddForce(Vector3.down * 80f, ForceMode.Force);
         }
-        else if (wallrunning)
+        else// on ground, wallrunning or air
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * (!isGrounded ? airMultiplier : 1), ForceMode.Force);
         }
-        // on ground
-        else if (grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-
-        // in air
-        else if (!grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
-
         // turn gravity off while on slope
         if(!wallrunning) rb.useGravity = !OnSlope();
     }
@@ -366,15 +355,10 @@ public class PlayerMovement : MonoBehaviour
 
         // reset y velocity
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-        if (wallrunning) {
-            Vector3 jumpDirection = (transform.up + currentWallHit.normal).normalized;
-            rb.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
-            
-        }
-        else
-        {
-            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-        }
+        rb.AddForce((wallrunning ? 
+                    (transform.up + lastWallHit.normal).normalized 
+                    : transform.up) 
+                      * jumpForce, ForceMode.Impulse);
         
     }
     private void ResetJump()
