@@ -880,7 +880,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf65b9dfeff5649b59a2a830845b7218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelNum: 0
+  levelNum: 1
 --- !u!1 &287854163
 GameObject:
   m_ObjectHideFlags: 0
@@ -2885,7 +2885,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   winUI: {fileID: 738278398}
-  levelSelectScene: 
 --- !u!1001 &1644395061448200970
 PrefabInstance:
   m_ObjectHideFlags: 0
