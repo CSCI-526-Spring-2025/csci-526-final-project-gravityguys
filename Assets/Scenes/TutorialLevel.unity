@@ -2516,7 +2516,7 @@ Transform:
   m_GameObject: {fileID: 315643757}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.24, y: 5.6700006, z: -41.3}
+  m_LocalPosition: {x: 10, y: 5, z: -41}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7545,7 +7545,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1174376936}
   - component: {fileID: 1174376938}
-  - component: {fileID: 1174376937}
   - component: {fileID: 1174376939}
   m_Layer: 0
   m_Name: Player
@@ -7563,7 +7562,7 @@ Transform:
   m_GameObject: {fileID: 1174376935}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.209999, y: 5.11, z: -41.57}
+  m_LocalPosition: {x: 10, y: 5, z: -41}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7572,36 +7571,6 @@ Transform:
   - {fileID: 437999428}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1174376937
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1174376935}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5acd6a2398fe4b03a28e2fee82b14b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wallLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  groundLayerMask:
-    serializedVersion: 2
-    m_Bits: 64
-  maxWallRunTime: 100
-  wallClimbDescendSpeed: 3
-  wallJumpUpForce: 7
-  wallJumpSideForce: 12
-  exitWallTime: 2
-  upwardsWallRunKey: 304
-  downwardsWallRunKey: 306
-  wallJumpKey: 32
-  wallRunForce: 200
-  wallCheckDistance: 1
-  minJumpHeight: 2
-  orientation: {fileID: 1152537239}
 --- !u!114 &1174376938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7638,10 +7607,17 @@ MonoBehaviour:
     m_Bits: 64
   grounded: 0
   maxSlopeAngle: 40
+  wallLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  wallCheckDistance: 1
+  wallrunning: 0
   orientation: {fileID: 1152537239}
   state: 0
   crouching: 0
-  wallrunning: 0
 --- !u!54 &1174376939
 Rigidbody:
   m_ObjectHideFlags: 0

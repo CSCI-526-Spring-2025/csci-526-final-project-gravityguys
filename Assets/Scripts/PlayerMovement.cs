@@ -51,7 +51,14 @@ public class PlayerMovement : MonoBehaviour
 
     private int i = 1;
 
+    [Header("Wall Handling")]
+    public LayerMask wallLayerMask;
+    public LayerMask groundLayerMask;
+    public float wallCheckDistance = 1;
+    private RaycastHit currentWallHit, lastWallHit;
+    public bool wallrunning;
 
+    [Header("Other")]
     public Transform orientation;
 
     float horizontalInput;
@@ -72,7 +79,6 @@ public class PlayerMovement : MonoBehaviour
     }
 
     public bool crouching;
-    public bool wallrunning;
 
     private void Start()
     {
@@ -88,8 +94,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.W))
         {
-            Debug.Log("lastPositionStored:" + lastPosition);
-            Debug.Log("CurPos:" + transform.position);
+            //Debug.Log("lastPositionStored:" + lastPosition);
+            //Debug.Log("CurPos:" + transform.position);
 
 
             stuckTimer += Time.deltaTime;
@@ -123,6 +129,8 @@ public class PlayerMovement : MonoBehaviour
 
         MyInput();
         SpeedControl();
+        CheckForWall();
+
         StateHandler();
 
         // handle drag
@@ -130,6 +138,10 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.linearDamping = groundDrag;
             AnalyticsManager.Instance.SetLastPlatformTouched(groundHit.collider.gameObject.name);
+        } 
+        else if (wallrunning) {
+            rb.linearDamping = groundDrag;
+            AnalyticsManager.Instance.SetLastPlatformTouched(currentWallHit.collider.gameObject.name);
         }
         else
         {
@@ -148,7 +160,7 @@ public class PlayerMovement : MonoBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
 
         // when to jump
-        if (Input.GetKey(jumpKey) && readyToJump && grounded)
+        if (Input.GetKey(jumpKey) && readyToJump && (grounded || wallrunning))
         {
             readyToJump = false;
 
@@ -182,6 +194,7 @@ public class PlayerMovement : MonoBehaviour
         {
             state = MovementState.wallrunning;
             desiredMoveSpeed = wallrunSpeed;
+            lastWallHit = currentWallHit;
         }
 
         // Mode - Crouching
@@ -191,7 +204,8 @@ public class PlayerMovement : MonoBehaviour
             desiredMoveSpeed = crouchSpeed;
         }
 
-        else if (!wallrunning && !grounded && Input.GetKey(dashingKey) && readyToDash)//dashing
+        // Mode - Dashing 
+        else if (!wallrunning && !grounded && Input.GetKey(dashingKey) && readyToDash)
         {
             readyToDash = false;
             dashCooldownTimer = dashCooldown;
@@ -249,9 +263,6 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log(readyToDash);
     }
 
-
-
-
     private IEnumerator SmoothlyLerpMoveSpeed()
     {
         // smoothly lerp movementSpeed to desired value
@@ -282,7 +293,17 @@ public class PlayerMovement : MonoBehaviour
     private void MovePlayer()
     {
         // calculate movement direction
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        if(wallrunning)
+        {
+            rb.useGravity = false;
+            moveDirection = playerCameraHolder.forward * verticalInput + playerCameraHolder.right * horizontalInput;
+        }
+        else
+        {
+            rb.useGravity = true;
+            moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        }
+        
 
         // on slope
         if (OnSlope() && !exitingSlope)
@@ -292,7 +313,11 @@ public class PlayerMovement : MonoBehaviour
             if (rb.linearVelocity.y > 0)
                 rb.AddForce(Vector3.down * 80f, ForceMode.Force);
         }
-
+        if (wallrunning)
+        {
+            Vector3 wallNormal = currentWallHit.normal;
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        }
         // on ground
         else if (grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
@@ -334,8 +359,16 @@ public class PlayerMovement : MonoBehaviour
 
         // reset y velocity
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        if (wallrunning) {
+            Vector3 jumpDirection = (transform.up + currentWallHit.normal).normalized;
+            rb.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
+            
+        }
+        else
+        {
+            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        }
+        
     }
     private void ResetJump()
     {
@@ -365,4 +398,33 @@ public class PlayerMovement : MonoBehaviour
         float mult = Mathf.Pow(10.0f, (float)digits);
         return Mathf.Round(value * mult) / mult;
     }
+
+    private void CheckForWall()
+    {
+        //Check on all sides if you hit a wall and set that to the current wall hit
+        RaycastHit rightWall, leftWall, frontWall, backWall;
+        bool hitRightWall = Physics.Raycast(transform.position, orientation.right, out rightWall, wallCheckDistance, wallLayerMask);
+        bool hitLeftWall = Physics.Raycast(transform.position, -orientation.right, out leftWall, wallCheckDistance, wallLayerMask);
+        bool hitFrontWall = Physics.Raycast(transform.position, orientation.forward, out frontWall, wallCheckDistance, wallLayerMask);
+        bool hitBackWall = Physics.Raycast(transform.position, -orientation.forward, out backWall, wallCheckDistance, wallLayerMask);
+
+        if (hitRightWall || hitLeftWall || hitFrontWall || hitBackWall)
+        {
+            wallrunning = true;
+            if (hitRightWall)
+                currentWallHit = rightWall;
+            else if (hitLeftWall)
+                currentWallHit = leftWall;
+            else if (hitFrontWall)
+                currentWallHit = frontWall;
+            else if (hitBackWall)
+                currentWallHit = backWall;
+        }
+        else
+        {
+            wallrunning = false;
+        }
+    }
+
+
 }

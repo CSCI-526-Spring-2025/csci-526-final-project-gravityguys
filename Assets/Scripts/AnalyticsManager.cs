@@ -47,7 +47,7 @@ public class AnalyticsManager : MonoBehaviour
     public void SetLastPlatformTouched(string platformName)
     {
         lastPlatformTouched = platformName;
-        Debug.Log($"🟢 Last Platform Updated: {lastPlatformTouched}");
+        //Debug.Log($"🟢 Last Platform Updated: {lastPlatformTouched}");
     }
 
     public void IncrementPlayerDeath()
