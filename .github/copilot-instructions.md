@@ -8,7 +8,7 @@
   - Layers:
     - Default, TransparentFX, Ignore Raycast, Water, UI, groundLayer, wallLayer, Editor Only
 - Active game object:
-  - Name: RightStick
+  - Name: LeftStick
   - Tag: Untagged
   - Layer: UI
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
