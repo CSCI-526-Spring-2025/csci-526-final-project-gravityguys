@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -32,13 +33,15 @@ public class PauseScript : MonoBehaviour
     void Update()
     {
         if (Input.GetKey(pauseKey))
-        {
-            if (!IsGamePaused)
-            {
-                pausePhysics();
-                pauseUI.SetActive(true);
-            }
-        }
+            PauseGameIfNotPaused();
+    }
+
+    public void PauseGameIfNotPaused()
+    {
+        if (IsGamePaused)
+            return;
+        pausePhysics();
+        pauseUI.SetActive(true);
     }
 
     public void pausePhysics()
