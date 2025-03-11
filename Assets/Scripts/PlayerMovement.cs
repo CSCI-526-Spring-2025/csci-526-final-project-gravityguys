@@ -365,6 +365,8 @@ public class PlayerMovement : MonoBehaviour
         rb.useGravity = !wallrunning;
         Transform moveTransform = wallrunning ? playerCameraHolder : orientation;
         moveDirection = moveTransform.forward * verticalInput + moveTransform.right * horizontalInput;
+
+        moveSpeed *= 1.5f;
         
         // on slope
         if (OnSlope() && !exitingSlope)
