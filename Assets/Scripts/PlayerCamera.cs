@@ -30,14 +30,16 @@ public class PlayerCamera : MonoBehaviour
         float mouseX = lookVector.x;//Input.GetAxisRaw("Mouse X") * Time.fixedDeltaTime * sensX;
         float mouseY = lookVector.y;//Input.GetAxisRaw("Mouse Y") * Time.fixedDeltaTime * sensY;
         Debug.Log("MouseX: " + mouseX +", MouseY: " + mouseY);
+        if (!PauseScript.IsGamePaused)
+        {
+            yRotation += mouseX;
 
-        yRotation += mouseX;
+            xRotation -= mouseY;
+            xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
-        // rotate cam and orientation
-        camHolder.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-        orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+            // rotate cam and orientation
+            camHolder.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+            orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+        }
     }
 }
