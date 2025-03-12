@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -11,14 +12,14 @@ public class PlayerMovement : MonoBehaviour
     public float wallrunSpeed;
     public float speedIncreaseMultiplier;
     public float slopeIncreaseMultiplier;
-    public Camera playerCamera;
+    public Transform playerCameraHolder;
     public float groundDrag;
+    private bool readyToJump = true;
 
     [Header("Jumping")]
     public float jumpForce;
     public float jumpCooldown;
     public float airMultiplier;
-    bool readyToJump;
 
     [Header("Crouching")]
     public float crouchSpeed;
@@ -26,10 +27,10 @@ public class PlayerMovement : MonoBehaviour
     private float startYScale;
 
     [Header("Dashing")]
-    [Header("Dashing")]
-    public float dashSpeed = 50f;
+    public float dashSpeed = 200f;
     public float dashTime = 0.2f;
     public float dashCooldown = 1.0f;
+    private float dashCooldownTimer;
     public bool readyToDash = true;
 
 
@@ -41,14 +42,23 @@ public class PlayerMovement : MonoBehaviour
     [Header("Ground Check")]
     public float playerHeight;
     public LayerMask whatIsGround;
-    public bool grounded;
+    public bool isGrounded;
 
     [Header("Slope Handling")]
     public float maxSlopeAngle;
     private RaycastHit slopeHit;
     private bool exitingSlope;
 
+    private int i = 1;
 
+    [Header("Wall Handling")]
+    public LayerMask wallLayerMask;
+    public LayerMask groundLayerMask;
+    public float wallCheckDistance = 1;
+    private RaycastHit currentWallHit, lastWallHit, groundHit;
+    public bool wallrunning;
+
+    [Header("Other")]
     public Transform orientation;
 
     float horizontalInput;
@@ -67,41 +77,94 @@ public class PlayerMovement : MonoBehaviour
         crouching,
         air
     }
-    
+
     public bool crouching;
-    public bool wallrunning;
 
     private void Start()
     {
-        playerCamera = Camera.main;
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-
-        readyToJump = true;
-
         startYScale = transform.localScale.y;
+    }
+
+    private float maxStuckTimeAllowed = 2f, stuckTimer = 0f;
+    private Vector3 lastPosition;
+
+    private bool IsStuck()
+    {
+        if (Input.GetKey(KeyCode.W))
+        {
+            //Debug.Log("lastPositionStored:" + lastPosition);
+            //Debug.Log("CurPos:" + transform.position);
+            stuckTimer += Time.deltaTime;
+
+            if (stuckTimer >= maxStuckTimeAllowed-1f &&  stuckTimer <= maxStuckTimeAllowed-0.5f)
+            {
+                lastPosition = transform.position;
+            }
+            else if (stuckTimer >= maxStuckTimeAllowed && Vector3.Distance(transform.position, lastPosition) <= 0.1f)
+            {
+                stuckTimer = 0f;
+                return true;
+            }
+        }
+        else
+        {
+            stuckTimer = 0f;
+        }
+        return false;
+
     }
 
     private void Update()
     {
-        // ground check
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
-
+        //Stop physics if game is paused.
+        Time.timeScale = PauseScript.IsGamePaused ? 0 : 1;
+        HandleStuck();
+        HandleDrag();
         MyInput();
         SpeedControl();
+        CheckForWall();
         StateHandler();
+        HandleAnalytics();
+    }
 
-        // handle drag
-        if (grounded)
-            rb.linearDamping = groundDrag;
-        else
-            rb.linearDamping = 0;
+    private void HandleStuck()
+    {
+        if(IsStuck())
+            Jump();
+    }
+
+    private void HandleAnalytics()
+    {
+        RaycastHit hit = isGrounded ? groundHit
+                            : (wallrunning ? lastWallHit 
+                                : default);
+        if (hit.point != Vector3.zero)//either ground or wall hit
+        {
+            AnalyticsManager.Instance.SetLastPlatformTouched(hit.collider.gameObject.name);
+        }
+                
+    }
+
+    private void HandleDrag()
+    {
+        isGrounded = Physics.Raycast(
+                    transform.position, 
+                    Vector3.down, 
+                    out groundHit, 
+                    playerHeight * 0.5f + 0.5f, 
+                    whatIsGround);
+        rb.linearDamping = (isGrounded || wallrunning) ? groundDrag : 0;
     }
 
     private void FixedUpdate()
     {
-        MovePlayer();
-    }
+        if (!PauseScript.IsGamePaused)
+        {
+            MovePlayer();
+        }
+        }
 
     private void MyInput()
     {
@@ -109,7 +172,7 @@ public class PlayerMovement : MonoBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
 
         // when to jump
-        if (Input.GetKey(jumpKey) && readyToJump && grounded)
+        if (Input.GetKey(jumpKey) && readyToJump && (isGrounded || wallrunning))
         {
             readyToJump = false;
 
@@ -117,13 +180,6 @@ public class PlayerMovement : MonoBehaviour
 
             Invoke(nameof(ResetJump), jumpCooldown);
         }
-        // start dashing
-        if (Input.GetKeyDown(dashingKey) && readyToDash && !wallrunning)
-        {
-            StartCoroutine(Dash());
-        }
-
-
 
         // start crouch
         if (Input.GetKeyDown(crouchKey) && horizontalInput == 0 && verticalInput == 0)
@@ -150,6 +206,7 @@ public class PlayerMovement : MonoBehaviour
         {
             state = MovementState.wallrunning;
             desiredMoveSpeed = wallrunSpeed;
+            lastWallHit = currentWallHit;
         }
 
         // Mode - Crouching
@@ -159,15 +216,19 @@ public class PlayerMovement : MonoBehaviour
             desiredMoveSpeed = crouchSpeed;
         }
 
-        else if (!wallrunning && !grounded && Input.GetKey(dashingKey))//dashing
+        // Mode - Dashing 
+        else if (!wallrunning && !isGrounded && Input.GetKey(dashingKey) && readyToDash)
         {
+            readyToDash = false;
+            dashCooldownTimer = dashCooldown;
+            Debug.Log("entered" + i++);
             state = MovementState.dashing;
             moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-            rb.AddForce(moveDirection.normalized*moveSpeed*3f, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized*dashSpeed*75, ForceMode.Force);
         }
 
         // Mode - Walking
-        else if (grounded)
+        else if (isGrounded)
         {
             state = MovementState.walking;
             desiredMoveSpeed = walkSpeed;
@@ -193,50 +254,26 @@ public class PlayerMovement : MonoBehaviour
         }
 
         lastDesiredMoveSpeed = desiredMoveSpeed;
+
+        if (dashCooldownTimer <= 0)
+        {
+            readyToDash = true;
+        }
+        else
+        {
+            dashCooldownTimer -= Time.deltaTime;
+        }
     }
 
-    private IEnumerator Dash()
+    private IEnumerator DashTimer()
     {
-        if (playerCamera == null)
-        {
-            Debug.LogError("No Player Camera found! Assign it in the Inspector.");
-            yield break;
-        }
-
         readyToDash = false;
-        rb.useGravity = false;
 
-        //  Get exact direction the camera is facing
-        Vector3 dashDirection = playerCamera.transform.forward;
-
-        //  Fix: Prevent downward tilt when looking forward
-        if (Mathf.Abs(dashDirection.y) < 0.1f)  // If looking mostly forward, remove downward influence
-        {
-            dashDirection.y = 0f;
-        }
-
-        //  Normalize direction to ensure equal dash distance
-        dashDirection = dashDirection.normalized;
-
-        //  Apply force instead of overriding velocity (more natural movement)
-        rb.linearVelocity = Vector3.zero;  // Reset velocity before dash
-        rb.AddForce(dashDirection * dashSpeed, ForceMode.Impulse);
-
-        Debug.Log("Dashing in Direction: " + dashDirection + " | Speed: " + dashSpeed);
-
-        yield return new WaitForSeconds(dashTime);
-
-        //  Reset movement after dash
-        rb.useGravity = true;
-        rb.linearVelocity = Vector3.zero;
-
-        yield return new WaitForSeconds(dashCooldown);
+        yield return new WaitForSeconds(1f);
 
         readyToDash = true;
+        Debug.Log(readyToDash);
     }
-
-
-
 
     private IEnumerator SmoothlyLerpMoveSpeed()
     {
@@ -268,8 +305,11 @@ public class PlayerMovement : MonoBehaviour
     private void MovePlayer()
     {
         // calculate movement direction
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
+        rb.useGravity = !wallrunning;
+        Transform moveTransform = wallrunning ? playerCameraHolder : orientation;
+        moveDirection = moveTransform.forward * verticalInput + moveTransform.right * horizontalInput;
+        
         // on slope
         if (OnSlope() && !exitingSlope)
         {
@@ -278,15 +318,10 @@ public class PlayerMovement : MonoBehaviour
             if (rb.linearVelocity.y > 0)
                 rb.AddForce(Vector3.down * 80f, ForceMode.Force);
         }
-
-        // on ground
-        else if (grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-
-        // in air
-        else if (!grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
-
+        else// on ground, wallrunning or air
+        {
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * (!isGrounded ? airMultiplier : 1), ForceMode.Force);
+        }
         // turn gravity off while on slope
         if(!wallrunning) rb.useGravity = !OnSlope();
     }
@@ -320,8 +355,11 @@ public class PlayerMovement : MonoBehaviour
 
         // reset y velocity
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        rb.AddForce((wallrunning ? 
+                    (transform.up + lastWallHit.normal).normalized 
+                    : transform.up) 
+                      * jumpForce, ForceMode.Impulse);
+        
     }
     private void ResetJump()
     {
@@ -352,13 +390,32 @@ public class PlayerMovement : MonoBehaviour
         return Mathf.Round(value * mult) / mult;
     }
 
-    
+    private void CheckForWall()
+    {
+        //Check on all sides if you hit a wall and set that to the current wall hit
+        RaycastHit rightWall, leftWall, frontWall, backWall;
+        bool hitRightWall = Physics.Raycast(transform.position, orientation.right, out rightWall, wallCheckDistance, wallLayerMask);
+        bool hitLeftWall = Physics.Raycast(transform.position, -orientation.right, out leftWall, wallCheckDistance, wallLayerMask);
+        bool hitFrontWall = Physics.Raycast(transform.position, orientation.forward, out frontWall, wallCheckDistance, wallLayerMask);
+        bool hitBackWall = Physics.Raycast(transform.position, -orientation.forward, out backWall, wallCheckDistance, wallLayerMask);
 
-
-
-
-
+        if (hitRightWall || hitLeftWall || hitFrontWall || hitBackWall)
+        {
+            wallrunning = true;
+            if (hitRightWall)
+                currentWallHit = rightWall;
+            else if (hitLeftWall)
+                currentWallHit = leftWall;
+            else if (hitFrontWall)
+                currentWallHit = frontWall;
+            else if (hitBackWall)
+                currentWallHit = backWall;
+        }
+        else
+        {
+            wallrunning = false;
+        }
+    }
 
 
 }
-

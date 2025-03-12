@@ -30,13 +30,14 @@ public class FadeWin : MonoBehaviour
             //Respawn when player reaches goal
             GameObject respawner = GameObject.FindGameObjectWithTag("Respawn");
             if (respawner)
+            {
+            	AnalyticsManager.Instance.PlayerWon();
+                respawner.BroadcastMessage("ResetSpawnLocation");
                 respawner.BroadcastMessage("RespawnPlayer");
-            
+            }
 
             //Make the goal fade out
             StartCoroutine(FadeOutWin());
-
-
         }
     }
 
@@ -51,7 +52,8 @@ public class FadeWin : MonoBehaviour
             canvasGroup.alpha -= Time.deltaTime * fadeSpeed; // Fade out smoothly
             yield return null;
         }
-
+        //Enable Instruction1 while disabling rest.
+        InstructionReveal.ResetAllInstructions();
         winTextUI.SetActive(false); // Hide text completely
 
     }

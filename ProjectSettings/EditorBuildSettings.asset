@@ -8,9 +8,24 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
-    path: Assets/Scenes/LevelOneScene_Flaten.unity
+  - enabled: 0
+    path: Assets/Scenes/LevelOneScene_OldFlaten.unity
     guid: 6aa8715fe11151349b585d144023ad65
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: b2434c8aa1dfb084585ee3c9292de513
+  - enabled: 1
+    path: Assets/Scenes/LevelSelect.unity
+    guid: ca59755ce5417ad4ba150ed760362dac
+  - enabled: 1
+    path: Assets/Scenes/LevelOneScene.unity
+    guid: e55bb20d509fd6744ba5d9fe73495657
+  - enabled: 1
+    path: Assets/Scenes/LevelTwoScene.unity
+    guid: 4be74f01c02713e4fae9e18d11c1e03c
+  - enabled: 1
+    path: Assets/Scenes/TutorialLevel.unity
+    guid: 0979e21915740474e813729f6289dca1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
