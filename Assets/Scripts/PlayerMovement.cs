@@ -67,6 +67,7 @@ public class PlayerMovement : MonoBehaviour
     Vector3 moveDirection;
 
     Rigidbody rb;
+    GravityController gc;
 
     public MovementState state;
     public enum MovementState
@@ -85,6 +86,7 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         startYScale = transform.localScale.y;
+        gc = GetComponent<GravityController>();
     }
 
     private float maxStuckTimeAllowed = 2f, stuckTimer = 0f;
@@ -151,7 +153,7 @@ public class PlayerMovement : MonoBehaviour
     {
         isGrounded = Physics.Raycast(
                     transform.position, 
-                    Vector3.down, 
+                    -orientation.transform.up, 
                     out groundHit, 
                     playerHeight * 0.5f + 0.5f, 
                     whatIsGround);
@@ -306,7 +308,8 @@ public class PlayerMovement : MonoBehaviour
     {
         // calculate movement direction
 
-        rb.useGravity = !wallrunning;
+        //rb.useGravity = !wallrunning;
+        if (gc) gc.SetUseGravity(!wallrunning);
         Transform moveTransform = wallrunning ? playerCameraHolder : orientation;
         moveDirection = moveTransform.forward * verticalInput + moveTransform.right * horizontalInput;
         
@@ -323,7 +326,8 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * (!isGrounded ? airMultiplier : 1), ForceMode.Force);
         }
         // turn gravity off while on slope
-        if(!wallrunning) rb.useGravity = !OnSlope();
+        //if(!wallrunning) rb.useGravity = !OnSlope();
+        if (!wallrunning && gc) gc.SetUseGravity(!OnSlope());
     }
 
     private void SpeedControl()
@@ -356,8 +360,8 @@ public class PlayerMovement : MonoBehaviour
         // reset y velocity
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         rb.AddForce((wallrunning ? 
-                    (transform.up + lastWallHit.normal).normalized 
-                    : transform.up) 
+                    (orientation.up + lastWallHit.normal).normalized 
+                    : orientation.up) 
                       * jumpForce, ForceMode.Impulse);
         
     }

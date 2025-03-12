@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PlayerCamera : MonoBehaviour
 {
@@ -33,8 +34,8 @@ public class PlayerCamera : MonoBehaviour
             xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
             // rotate cam and orientation
-            camHolder.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-            orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+            camHolder.localRotation = Quaternion.Euler(xRotation, yRotation, 0);
+            orientation.localRotation = Quaternion.Euler(0, yRotation, 0);
         }
     }
 }
