@@ -2011,7 +2011,7 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  grounded: 0
+  isGrounded: 0
   maxSlopeAngle: 40
   wallLayerMask:
     serializedVersion: 2
@@ -2950,6 +2950,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 868257243}
     m_Modifications:
+    - target: {fileID: 602113493215606161, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1405519777841882776, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.8207774
@@ -2991,6 +2995,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1689023395457412385, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
+      propertyPath: indicator
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1689023395457412385, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
       propertyPath: respawnPoint
       value: 
       objectReference: {fileID: 0}
@@ -3007,7 +3015,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1174376935}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5570064866169518421, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
+    - {fileID: 602113493215606161, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
