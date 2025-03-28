@@ -35,7 +35,7 @@ public class ChangeGravity : MonoBehaviour
             if (other.transform.parent.gameObject.GetComponent<GravityController>().activeGravitySource == this)
             {
                 {
-                    if (other.transform.parent.gameObject.GetComponent<PlayerMovement>().state == PlayerMovement.MovementState.air)
+                    //if (other.transform.parent.gameObject.GetComponent<PlayerMovement>().state == PlayerMovement.MovementState.air)
                     {
                         other.transform.parent.BroadcastMessage("ShiftGravity", Vector3.down);
                     }

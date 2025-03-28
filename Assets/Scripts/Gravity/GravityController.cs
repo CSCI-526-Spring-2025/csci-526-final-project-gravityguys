@@ -6,12 +6,14 @@ public class GravityController : MonoBehaviour
     [SerializeField] float GravityStrength;
     [SerializeField] float RotationTime;
     private bool useGravity;
-    private Vector3 gravityDir;
+    public Vector3 gravityDir;
     private ConstantForce CF;
     private bool currentlyShifting = false;
 
     public ChangeGravity activeGravitySource;
     Coroutine activeShift;
+
+    bool fixAngles = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -31,6 +33,8 @@ public class GravityController : MonoBehaviour
         {
             CF.force = Vector3.zero;
         }
+
+        if (fixAngles) checkAngle();
     }
 
     public void SetUseGravity(bool b)
@@ -43,6 +47,7 @@ public class GravityController : MonoBehaviour
         Transform t = this.gameObject.transform;
 
         Vector3 newDirection = -cg.transform.up.normalized;
+        for (int i = 0; i < 3; ++i) newDirection[i] = Mathf.Round(newDirection[i]);
         //if (Mathf.Abs(180 * Mathf.Acos(Vector3.Dot(t.up, -newDirection)) / Mathf.PI) > 45) 
         {
             if (!currentlyShifting)
@@ -114,7 +119,7 @@ public class GravityController : MonoBehaviour
             yield return null;
         }
 
-        for (int i = 0; i < 3; ++i)
+        for (int i = 0; i < 5; ++i)
         {
             this.transform.localRotation = pQ2;
             camera.transform.localRotation = camQ2;
@@ -122,11 +127,17 @@ public class GravityController : MonoBehaviour
         }
 
         currentlyShifting = false;
+        fixAngles = true;
         yield return null;
     }
 
     private void checkAngle()
     {
-        //this.transform.localRotation
+        Vector3 eulers = this.transform.localRotation.eulerAngles;
+        eulers[0] = Mathf.Round(eulers[0] / 90.0f) * 90.0f;
+        eulers[1] = Mathf.Round(eulers[1] / 90.0f) * 90.0f;
+        eulers[2] = Mathf.Round(eulers[2] / 90.0f) * 90.0f;
+
+        this.transform.localRotation = Quaternion.Euler(eulers);
     }
 }

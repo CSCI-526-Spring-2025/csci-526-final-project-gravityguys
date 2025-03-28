@@ -226,7 +226,7 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log("entered" + i++);
             state = MovementState.dashing;
             moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-            rb.AddForce(moveDirection.normalized*dashSpeed*75, ForceMode.Force);
+            rb.AddRelativeForce(moveDirection.normalized*dashSpeed*75, ForceMode.Force);
         }
 
         // Mode - Walking
@@ -358,7 +358,7 @@ public class PlayerMovement : MonoBehaviour
         exitingSlope = true;
 
         // reset y velocity
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        //rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         rb.AddForce((wallrunning ? 
                     (orientation.up + lastWallHit.normal).normalized 
                     : orientation.up) 
