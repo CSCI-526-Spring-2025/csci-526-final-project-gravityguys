@@ -6,6 +6,7 @@ public class PauseScript : MonoBehaviour
     public static PauseScript Instance { get; private set; }
 
     public GameObject pauseUI;
+    public GameObject loseUI;
     public string levelSelectScene;
     public string mainMenuScene;
     public static bool IsGamePaused = false;
@@ -56,7 +57,7 @@ public class PauseScript : MonoBehaviour
         Cursor.visible = false;
         IsGamePaused = false;
         pauseUI.SetActive(false);
-        
+        loseUI.SetActive(false);
     }
     public void levelSelectLoad()
     {
