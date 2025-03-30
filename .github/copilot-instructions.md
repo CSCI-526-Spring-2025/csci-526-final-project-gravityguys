@@ -8,7 +8,7 @@
   - Layers:
     - Default, TransparentFX, Ignore Raycast, Water, UI, groundLayer, wallLayer, Editor Only
 - Active game object:
-  - Name: Canvas
-  - Tag: Untagged
-  - Layer: UI
+  - Name: CameraHolder
+  - Tag: MainCamera
+  - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->

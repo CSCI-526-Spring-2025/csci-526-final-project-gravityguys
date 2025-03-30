@@ -164,7 +164,7 @@ public class PlayerMovement : MonoBehaviour
         {
             MovePlayer();
         }
-        }
+    }
 
     private void MyInput()
     {
@@ -302,13 +302,25 @@ public class PlayerMovement : MonoBehaviour
         moveSpeed = desiredMoveSpeed;
     }
 
+    private Vector3 MoveSticky(Transform moveTransform, bool isWallrunning)
+    {
+        //moveDirection = moveTransform.forward * verticalInput + moveTransform.right * horizontalInput;
+        Vector3 wallNormal = lastWallHit.normal,
+            wallForward = Vector3.Cross(moveTransform.up,wallNormal).normalized;
+        if (Vector3.Dot(wallForward, moveTransform.forward) < 0)
+            wallForward *= -1;
+        return isWallrunning ? wallForward * verticalInput : 
+            moveTransform.forward * verticalInput + moveTransform.right * horizontalInput; 
+        //moveDirection = new Vector3(wallForward.x,wallForward.y,wallForward.z); // autoPilot
+    }
+
     private void MovePlayer()
     {
         // calculate movement direction
 
         rb.useGravity = !wallrunning;
         Transform moveTransform = wallrunning ? playerCameraHolder : orientation;
-        moveDirection = moveTransform.forward * verticalInput + moveTransform.right * horizontalInput;
+        moveDirection = MoveSticky(moveTransform, wallrunning);
         
         // on slope
         if (OnSlope() && !exitingSlope)
