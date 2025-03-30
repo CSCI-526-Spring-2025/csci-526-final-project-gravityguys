@@ -4,11 +4,11 @@
 - Active scene:
   - Name: TutorialLevel
   - Tags:
-    - Untagged, Respawn, Finish, EditorOnly, MainCamera, Player, GameController, Instruction
+    - Untagged, Respawn, Finish, EditorOnly, MainCamera, Player, GameController, Instruction, DashEffect
   - Layers:
     - Default, TransparentFX, Ignore Raycast, Water, UI, groundLayer, wallLayer, Editor Only
 - Active game object:
-  - Name: PlayerCamera
-  - Tag: MainCamera
-  - Layer: Default
+  - Name: Game Over Screen
+  - Tag: Untagged
+  - Layer: UI
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->

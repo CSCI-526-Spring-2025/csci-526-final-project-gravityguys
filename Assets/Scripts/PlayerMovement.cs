@@ -62,6 +62,8 @@ public class PlayerMovement : MonoBehaviour
     public Transform orientation;
 
     public FovKick fovKick;
+    public CameraShake cameraShake;
+    public DashTint dashTint;
 
     float horizontalInput;
     float verticalInput;
@@ -231,6 +233,10 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(moveDirection.normalized*dashSpeed*75, ForceMode.Force);//Dash
             if(fovKick != null)
                 fovKick.TriggerDashFOV();
+            if(cameraShake != null)
+                cameraShake.TriggerShake();
+            if(dashTint != null)
+                dashTint.TriggerTint();
         }
 
         // Mode - Walking
