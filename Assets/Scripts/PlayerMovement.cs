@@ -61,6 +61,10 @@ public class PlayerMovement : MonoBehaviour
     [Header("Other")]
     public Transform orientation;
 
+    public FovKick fovKick;
+    public CameraShake cameraShake;
+    public DashTint dashTint;
+
     float horizontalInput;
     float verticalInput;
 
@@ -69,6 +73,7 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody rb;
 
     public MovementState state;
+    
     public enum MovementState
     {
         walking,
@@ -85,6 +90,7 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         startYScale = transform.localScale.y;
+        //fovKick = FindObjectOfType<FovKick>();
     }
 
     private float maxStuckTimeAllowed = 2f, stuckTimer = 0f;
@@ -224,7 +230,13 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log("entered" + i++);
             state = MovementState.dashing;
             moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-            rb.AddForce(moveDirection.normalized*dashSpeed*75, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized*dashSpeed*75, ForceMode.Force);//Dash
+            if(fovKick != null)
+                fovKick.TriggerDashFOV();
+            if(cameraShake != null)
+                cameraShake.TriggerShake();
+            if(dashTint != null)
+                dashTint.TriggerTint();
         }
 
         // Mode - Walking
