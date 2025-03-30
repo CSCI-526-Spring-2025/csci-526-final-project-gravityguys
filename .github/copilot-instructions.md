@@ -8,7 +8,7 @@
   - Layers:
     - Default, TransparentFX, Ignore Raycast, Water, UI, groundLayer, wallLayer, Editor Only
 - Active game object:
-  - Name: CameraHolder
+  - Name: PlayerCamera
   - Tag: MainCamera
   - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
