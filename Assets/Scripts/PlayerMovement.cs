@@ -64,6 +64,7 @@ public class PlayerMovement : MonoBehaviour
     public FovKick fovKick;
     public CameraShake cameraShake;
     public DashTint dashTint;
+    public RevealLoadingBar loadingBar;
 
     float horizontalInput;
     float verticalInput;
@@ -237,6 +238,8 @@ public class PlayerMovement : MonoBehaviour
                 cameraShake.TriggerShake();
             if(dashTint != null)
                 dashTint.TriggerTint();
+            if(loadingBar != null)
+                loadingBar.ShowDashLoadingBar();
         }
 
         // Mode - Walking
@@ -270,6 +273,8 @@ public class PlayerMovement : MonoBehaviour
         if (dashCooldownTimer <= 0)
         {
             readyToDash = true;
+            if(loadingBar != null)
+                loadingBar.ShowDashReadyBar();
         }
         else
         {
