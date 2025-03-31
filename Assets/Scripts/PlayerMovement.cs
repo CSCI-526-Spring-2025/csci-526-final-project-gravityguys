@@ -72,6 +72,7 @@ public class PlayerMovement : MonoBehaviour
     Vector3 moveDirection;
 
     Rigidbody rb;
+    GravityController gc;
 
     public MovementState state;
     
@@ -91,6 +92,7 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         startYScale = transform.localScale.y;
+        gc = GetComponent<GravityController>();
         //fovKick = FindObjectOfType<FovKick>();
     }
 
@@ -158,7 +160,7 @@ public class PlayerMovement : MonoBehaviour
     {
         isGrounded = Physics.Raycast(
                     transform.position, 
-                    Vector3.down, 
+                    -orientation.transform.up, 
                     out groundHit, 
                     playerHeight * 0.5f + 0.5f, 
                     whatIsGround);
@@ -231,7 +233,8 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log("entered" + i++);
             state = MovementState.dashing;
             moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-            rb.AddForce(moveDirection.normalized*dashSpeed*75, ForceMode.Force);//Dash
+            rb.AddRelativeForce(moveDirection.normalized*dashSpeed*75, ForceMode.Force);
+            //rb.AddForce(moveDirection.normalized*dashSpeed*75, ForceMode.Force);//Dash
             if(fovKick != null)
                 fovKick.TriggerDashFOV();
             if(cameraShake != null)
@@ -335,7 +338,8 @@ public class PlayerMovement : MonoBehaviour
     {
         // calculate movement direction
 
-        rb.useGravity = !wallrunning;
+        //rb.useGravity = !wallrunning;
+        if (gc) gc.SetUseGravity(!wallrunning);
         Transform moveTransform = wallrunning ? playerCameraHolder : orientation;
         moveDirection = MoveSticky(moveTransform, wallrunning);
         
@@ -352,7 +356,8 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * (!isGrounded ? airMultiplier : 1), ForceMode.Force);
         }
         // turn gravity off while on slope
-        if(!wallrunning) rb.useGravity = !OnSlope();
+        //if(!wallrunning) rb.useGravity = !OnSlope();
+        if (!wallrunning && gc) gc.SetUseGravity(!OnSlope());
     }
 
     private void SpeedControl()
@@ -383,10 +388,10 @@ public class PlayerMovement : MonoBehaviour
         exitingSlope = true;
 
         // reset y velocity
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        //rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         rb.AddForce((wallrunning ? 
-                    (transform.up + lastWallHit.normal).normalized 
-                    : transform.up) 
+                    (orientation.up + lastWallHit.normal).normalized 
+                    : orientation.up) 
                       * jumpForce, ForceMode.Impulse);
         
     }

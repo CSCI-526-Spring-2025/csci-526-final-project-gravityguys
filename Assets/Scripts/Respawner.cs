@@ -11,12 +11,28 @@ public class Respawner : MonoBehaviour
     private void Start()
     {
         originalLocation = this.transform.position;
+        if (!Player)
+        {
+            Player = FindAnyObjectByType<PlayerMovement>().gameObject;
+        }
     }
 
     private void RespawnPlayer()
     {
         Player.transform.position = Respawn.transform.position;
+        GravityController gc = Player.GetComponent<GravityController>();
+        if (gc)
+        {
+            gc.BroadcastMessage("ShiftGravity", Vector3.down);
+        }
         //Player.transform.rotation = Respawn.transform.rotation;
+        /*
+        PlayerCamera pc = Camera.main.gameObject.GetComponent<PlayerCamera>();
+        if (pc)
+        {
+            pc.BroadcastMessage("setCamera", Respawn.transform);
+        }
+        */
     }
 
     private void SetCheckPoint(CheckPoint newCheckPoint)
