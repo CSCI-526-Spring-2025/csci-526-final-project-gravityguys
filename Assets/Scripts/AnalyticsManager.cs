@@ -7,7 +7,7 @@ public class AnalyticsManager : MonoBehaviour
 {
     public static AnalyticsManager Instance;
 
-    [SerializeField] private int levelNum = 1;
+    [SerializeField] private int levelNum = 0;
 
     private int deathNum = 0;
     private bool completedLevel = false;
