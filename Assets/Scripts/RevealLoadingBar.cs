@@ -17,6 +17,22 @@ public class RevealLoadingBar : MonoBehaviour
 
     private Coroutine pulseCoroutine;
 
+    private void Start()
+    {
+        if (!dashBarFill)
+        {
+            dashBarFill = GameObject.Find("Canvas/DashProgressBar/DashBar_Fill").GetComponent<Image>();
+        }
+        if (!dashBarBG)
+        {
+            dashBarBG = GameObject.Find("Canvas/DashProgressBar/DashBar_BG").GetComponent<Image>();
+        }
+        if (!dashBarFill)
+        {
+            dashText = GameObject.Find("Canvas/DashProgressBar/DashBar_TMP").GetComponent<TextMeshProUGUI>();
+        }
+    }
+
     public void ShowDashLoadingBar()
     {
         dashBarBG.enabled = true;

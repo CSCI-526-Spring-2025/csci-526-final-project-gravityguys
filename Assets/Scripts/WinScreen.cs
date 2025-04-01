@@ -7,6 +7,10 @@ public class WinScreen : MonoBehaviour
 
     void Start()
     {
+        if (!winUI)
+        {
+            winUI = GameObject.Find("PlayerPrefab/Canvas/Win Screen");
+        }
         winUI.SetActive(false);
     }
 

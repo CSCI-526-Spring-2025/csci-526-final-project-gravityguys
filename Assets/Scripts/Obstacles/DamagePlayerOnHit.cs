@@ -7,6 +7,10 @@ public class DamagePlayerOnHit : MonoBehaviour
 
 	void Start()
     {
+        if (!loseUI)
+        {
+            loseUI = GameObject.Find("PlayerPrefab/Canvas/Game Over Screen");
+        }
         loseUI.SetActive(false);
     }
 
