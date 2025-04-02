@@ -1459,12 +1459,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1689023395457412385, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
+      propertyPath: indicator
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1689023395457412385, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
       propertyPath: respawnPoint
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2440172194356795636, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4882916673316936544, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
       propertyPath: m_TagString
       value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 4972527974913634179, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4996956752379010110, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
       propertyPath: m_Name
