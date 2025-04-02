@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class PlayerCamera : MonoBehaviour
 {
@@ -14,6 +13,7 @@ public class PlayerCamera : MonoBehaviour
     public float xRotation;
     public float yRotation;
 
+    private float scaledMouse;
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -22,6 +22,15 @@ public class PlayerCamera : MonoBehaviour
         Vector3 initRot = camHolder.eulerAngles;
         xRotation = initRot[0];
         yRotation = initRot[1];
+
+        if (Application.isEditor)
+        {
+            scaledMouse = 1;
+        }
+        else
+        {
+            scaledMouse = 0.5f;
+        }
     }
 
     private void setCamera(Vector3 lookat)
@@ -38,8 +47,8 @@ public class PlayerCamera : MonoBehaviour
         if (!PauseScript.IsGamePaused)
         {
             // get mouse input
-            float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
-            float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
+            float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX * scaledMouse;
+            float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY * scaledMouse;
 
             yRotation += mouseX;
 
