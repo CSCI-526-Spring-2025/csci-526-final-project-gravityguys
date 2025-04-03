@@ -38,7 +38,7 @@ public class RevealLoadingBar : MonoBehaviour
         dashBarBG.enabled = true;
         dashBarFill.fillAmount = 0f;
         dashBarFill.color = loadingColor;
-        dashText.text = "Loading";
+        dashText.text = "Dash Refreshing";
         dashText.color = Color.white;
 
         if (pulseCoroutine != null)
@@ -53,7 +53,7 @@ public class RevealLoadingBar : MonoBehaviour
     {
         dashBarFill.fillAmount = 1f;
         dashBarFill.color = readyColor;
-        dashText.text = "Ready";
+        dashText.text = "Dash Ready";
         dashText.color = Color.yellow;
         dashBarBG.enabled = false;
 
