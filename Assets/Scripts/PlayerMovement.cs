@@ -324,6 +324,17 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 MoveSticky(Transform moveTransform, bool isWallrunning)
     {
+        if (isWallrunning)
+        {
+            float angleRad = Mathf.Acos(Vector3.Dot(moveTransform.up.normalized, lastWallHit.normal.normalized));
+            Quaternion rot = Quaternion.AngleAxis(angleRad * 180 / Mathf.PI, Vector3.Cross(moveTransform.up.normalized, lastWallHit.normal.normalized).normalized);
+            Matrix4x4 rotationMatrix = Matrix4x4.Rotate(rot);
+
+            Vector3 vMove = verticalInput * rotationMatrix.MultiplyVector(moveTransform.forward);
+            Vector3 hMove = horizontalInput * rotationMatrix.MultiplyVector(moveTransform.right);
+            return (vMove + hMove).normalized;
+        }
+
         //moveDirection = moveTransform.forward * verticalInput + moveTransform.right * horizontalInput;
         Vector3 wallNormal = lastWallHit.normal,
             wallForward = Vector3.Cross(moveTransform.up,wallNormal).normalized;
