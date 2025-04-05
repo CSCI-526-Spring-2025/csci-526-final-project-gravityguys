@@ -2,7 +2,10 @@ using UnityEngine;
 
 public class ChangeGravity : MonoBehaviour
 {
+    public Vector3 EulerCamera;
     public bool checkForEnter = true;
+
+
     private void OnTriggerEnter(Collider other)
     {
         if (checkForEnter)

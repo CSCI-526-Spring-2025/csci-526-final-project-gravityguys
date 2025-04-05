@@ -1070,6 +1070,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ForceFieldPrefab (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4421179620645332743, guid: 5a10629102af3f34fae7763986826fce, type: 3}
+      propertyPath: EulerCamera.x
+      value: -90
+      objectReference: {fileID: 0}
     - target: {fileID: 6211843753907829232, guid: 5a10629102af3f34fae7763986826fce, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -3079,6 +3083,10 @@ PrefabInstance:
     - target: {fileID: 32786058652966866, guid: 5a10629102af3f34fae7763986826fce, type: 3}
       propertyPath: m_Name
       value: ForceFieldPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421179620645332743, guid: 5a10629102af3f34fae7763986826fce, type: 3}
+      propertyPath: EulerCamera.x
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 7713375727214091135, guid: 5a10629102af3f34fae7763986826fce, type: 3}
       propertyPath: m_LocalScale.x

@@ -25,14 +25,8 @@ public class Respawner : MonoBehaviour
         {
             gc.BroadcastMessage("ShiftGravity", Vector3.down);
         }
-        //Player.transform.rotation = Respawn.transform.rotation;
-        /*
-        PlayerCamera pc = Camera.main.gameObject.GetComponent<PlayerCamera>();
-        if (pc)
-        {
-            pc.BroadcastMessage("setCamera", Respawn.transform);
-        }
-        */
+        Player.transform.rotation = Quaternion.Euler(0, 0, 0);
+        Player.transform.parent.GetChild(2).transform.rotation = Quaternion.Euler(0, 0, 0);
     }
 
     private void SetCheckPoint(CheckPoint newCheckPoint)

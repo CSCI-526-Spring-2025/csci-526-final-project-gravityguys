@@ -8,7 +8,7 @@ public class GravityController : MonoBehaviour
     private bool useGravity;
     public Vector3 gravityDir;
     private ConstantForce CF;
-    private bool currentlyShifting = false;
+    public bool currentlyShifting = false;
 
     public ChangeGravity activeGravitySource;
     Coroutine activeShift;
@@ -69,7 +69,7 @@ public class GravityController : MonoBehaviour
         Transform t = this.gameObject.transform;
         if (activeGravitySource)
         {
-            //StopAllCoroutines();
+            StopAllCoroutines();
             activeGravitySource.checkForEnter = true;
             activeGravitySource = null;
                 
@@ -98,14 +98,27 @@ public class GravityController : MonoBehaviour
         GameObject camera = Camera.main.transform.parent.parent.gameObject;
         Quaternion camQ1 = camera.transform.localRotation;
         Transform camT2 = camera.transform;
-        camT2.Rotate(axis, angle);
-        Quaternion camQ2 = camT2.localRotation;
+        Quaternion camQ2;
+        if(activeGravitySource)
+        {
+            camQ2 = Quaternion.Euler(activeGravitySource.EulerCamera);
+        }
+        else
+        {
+            camQ2 = Quaternion.Euler(0,0,0);
+        }
 
         Quaternion pQ1 = this.gameObject.transform.localRotation;
         Transform pT2 = this.gameObject.transform;
-        pT2.Rotate(axis, angle);
-        Quaternion pQ2 = pT2.localRotation;
-        Vector3 pq2_euler = pQ2.eulerAngles;
+        Quaternion pQ2;
+        if (activeGravitySource)
+        {
+            pQ2 = Quaternion.Euler(activeGravitySource.EulerCamera);
+        }
+        else
+        {
+            pQ2 = Quaternion.Euler(0, 0, 0);
+        }
 
         pQ2.Normalize();
         camQ2.Normalize();
