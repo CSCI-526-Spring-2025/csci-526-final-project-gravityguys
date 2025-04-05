@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     public Transform playerCameraHolder;
     public float groundDrag;
     private bool readyToJump = true;
+    public bool GetJump() { return readyToJump; }
 
     [Header("Jumping")]
     public float jumpForce;
