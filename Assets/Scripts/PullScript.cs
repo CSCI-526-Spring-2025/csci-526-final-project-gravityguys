@@ -30,7 +30,7 @@ public class Pull : MonoBehaviour
 
     [Tooltip("The velocity at which the object is thrown")]
     public float throwVelocity;
-
+    public GameObject spriteToShow;
     void Update()
     {
 
@@ -48,6 +48,7 @@ public class Pull : MonoBehaviour
                 if (hit.transform.tag.Equals(pullableTag))
                 {
                     StartCoroutine(PullObject(hit.transform));
+                    spriteToShow.GetComponent<SpriteRenderer>().enabled = true;
                 }
             }
         }
@@ -67,6 +68,7 @@ public class Pull : MonoBehaviour
                 heldObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
                 heldObject.GetComponent<Rigidbody>().linearVelocity = transform.forward * throwVelocity;
                 heldObject = null;
+                spriteToShow.GetComponent<SpriteRenderer>().enabled = false;
             }
         }
     }
