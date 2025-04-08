@@ -38,6 +38,11 @@ public class Respawner : MonoBehaviour
             Debug.Log("Reset Object - " + i.name);
             i.BroadcastMessage("ResetObject");
         }
+        GameObject hand = GameObject.Find("Hand");
+        if (hand != null && hand.transform.childCount > 0)
+        {
+            hand.transform.DetachChildren();
+        }
     }
 
     private void SetCheckPoint(CheckPoint newCheckPoint)

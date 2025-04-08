@@ -9,7 +9,6 @@ public class LevelSelect : MonoBehaviour
     public string level1Scene;
     public string level2Scene;
     public string level3Scene;
-    public string level4Scene;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -32,9 +31,5 @@ public class LevelSelect : MonoBehaviour
     public void level3Load()
     {
         SceneManager.LoadScene(level3Scene);
-    }
-    public void levelWallLoad()
-    {
-        SceneManager.LoadScene(level4Scene);
     }
 }

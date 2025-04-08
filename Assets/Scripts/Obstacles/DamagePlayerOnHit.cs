@@ -16,11 +16,13 @@ public class DamagePlayerOnHit : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+
         if (other.tag.Equals("Player"))
         {
         	PauseScript.Instance.pausePhysics();
          	loseUI.SetActive(true);
-
+            GameObject cam = Camera.main.gameObject;
+            cam.BroadcastMessage("ResetObject");
             GameObject respawner = GameObject.FindGameObjectWithTag("Respawn");
             if (respawner)
             {
