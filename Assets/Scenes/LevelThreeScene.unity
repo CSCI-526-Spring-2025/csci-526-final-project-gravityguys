@@ -1264,7 +1264,7 @@ PrefabInstance:
     - target: {fileID: 1689023395457412385, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
       propertyPath: checkptText
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1040128546}
     - target: {fileID: 1689023395457412385, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
       propertyPath: respawnPoint
       value: 
@@ -5866,7 +5866,7 @@ PrefabInstance:
     - target: {fileID: 1689023395457412385, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
       propertyPath: checkptText
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1040128546}
     - target: {fileID: 1689023395457412385, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
       propertyPath: respawnPoint
       value: 
@@ -7623,6 +7623,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1034047018}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1040128546 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4330359475677978137, guid: 11f62522804549f4bbe89c82984749e4, type: 3}
+  m_PrefabInstance: {fileID: 1616275168}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1050905139
 PrefabInstance:
   m_ObjectHideFlags: 0
