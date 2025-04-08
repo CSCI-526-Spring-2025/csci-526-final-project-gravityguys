@@ -31,6 +31,7 @@ public class Pull : MonoBehaviour
     [Tooltip("The velocity at which the object is thrown")]
     public float throwVelocity;
     public GameObject spriteToShow;
+    private int flag = 0;
     void Update()
     {
 
@@ -45,10 +46,11 @@ public class Pull : MonoBehaviour
         {
             if (Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity))
             {
-                if (hit.transform.tag.Equals(pullableTag))
+                if (hit.transform.tag.Equals(pullableTag) && flag==0)
                 {
                     StartCoroutine(PullObject(hit.transform));
                     spriteToShow.GetComponent<SpriteRenderer>().enabled = true;
+                    flag = 1;
                 }
             }
         }
@@ -69,6 +71,7 @@ public class Pull : MonoBehaviour
                 heldObject.GetComponent<Rigidbody>().linearVelocity = transform.forward * throwVelocity;
                 heldObject = null;
                 spriteToShow.GetComponent<SpriteRenderer>().enabled = false;
+                flag = 0;
             }
         }
     }
@@ -128,5 +131,14 @@ public class Pull : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    private void ResetObject()
+    {
+        flag = 0;
+        //heldObject.gameObject.BroadcastMessage("ResetObject");
+        heldObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+        heldObject = null;
+        
     }
 }
