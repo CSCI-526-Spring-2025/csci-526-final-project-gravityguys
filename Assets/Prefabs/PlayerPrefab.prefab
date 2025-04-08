@@ -264,6 +264,7 @@ MonoBehaviour:
   GravityStrength: 15
   RotationTime: 0.5
   gravityDir: {x: 0, y: 0, z: 0}
+  currentlyShifting: 0
   activeGravitySource: {fileID: 0}
 --- !u!75 &2746636321236538143
 ConstantForce:
@@ -1955,8 +1956,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 476fd70dff14948849d04f2668129b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensX: 400
-  sensY: 400
+  sensX: 300
+  sensY: 300
   orientation: {fileID: 8087852549132777548}
   camHolder: {fileID: 6915718450297732924}
   xRotation: 0

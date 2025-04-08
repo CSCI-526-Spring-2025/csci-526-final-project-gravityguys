@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public float test;
+
+
     [Header("Movement")]
     private float moveSpeed;
     private float desiredMoveSpeed;
@@ -233,10 +236,20 @@ public class PlayerMovement : MonoBehaviour
             dashCooldownTimer = dashCooldown;
             Debug.Log("entered" + i++);
             state = MovementState.dashing;
-            moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-            rb.AddRelativeForce(moveDirection.normalized*dashSpeed*75, ForceMode.Force);
-            //rb.AddForce(moveDirection.normalized*dashSpeed*75, ForceMode.Force);//Dash
-            if(fovKick != null)
+            moveDirection = (orientation.forward * verticalInput + orientation.right * horizontalInput).normalized;
+
+            if(!gc.activeGravitySource)
+                rb.AddForce(moveDirection.normalized * dashSpeed * 75, ForceMode.Force);//Dash
+            else
+            {
+                float y = moveDirection.y;
+                float mag = 75.0f * (1.0f- moveDirection.y) + test * moveDirection.y;
+
+                rb.AddForce(moveDirection.normalized * dashSpeed * mag, ForceMode.Force);//Dash
+            }
+
+
+            if (fovKick != null)
                 fovKick.TriggerDashFOV();
             if(cameraShake != null)
                 cameraShake.TriggerShake();
