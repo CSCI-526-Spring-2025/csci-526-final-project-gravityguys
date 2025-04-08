@@ -2133,6 +2133,7 @@ GameObject:
   - component: {fileID: 196775662}
   - component: {fileID: 196775661}
   - component: {fileID: 196775660}
+  - component: {fileID: 196775665}
   m_Layer: 0
   m_Name: Bottom Bound
   m_TagString: Untagged
@@ -2242,6 +2243,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &196775665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196775659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4749250af1f21484c90ab77b0128e798, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &211545569
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8394,6 +8407,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -10.89
       objectReference: {fileID: 0}
+    - target: {fileID: 2501346389221450637, guid: fc5ee86455e464cce9e46dc4076e5aad, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3776453529666109728, guid: fc5ee86455e464cce9e46dc4076e5aad, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.57
@@ -8833,6 +8850,10 @@ PrefabInstance:
     - target: {fileID: 8479175168377746296, guid: c0489aa560074493f9559cd716f4d14a, type: 3}
       propertyPath: m_Name
       value: BreakableWall (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8479175168377746296, guid: c0489aa560074493f9559cd716f4d14a, type: 3}
+      propertyPath: m_TagString
+      value: DestructibleWall
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

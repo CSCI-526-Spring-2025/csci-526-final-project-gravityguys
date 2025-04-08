@@ -16,7 +16,6 @@ public class DamagePlayerOnHit : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.name);
         if (other.tag.Equals("Player"))
         {
         	PauseScript.Instance.pausePhysics();
