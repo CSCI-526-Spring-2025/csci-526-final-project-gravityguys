@@ -5,6 +5,11 @@
                 "type": "System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
                 "key": "buildOutputDirList",
                 "value": "{\"m_Value\":\"C:/Users/alanl/OneDrive/Desktop/CSCI526/Workspace/alanlopezlopez.github.io/beta-final-build;C:/Users/trync/Downloads/Test;C:/Users/alanl/OneDrive/Desktop/CSCI526/Workspace/alanlopezlopez.github.io/beta2build;;;;;;;\"}"
+            },
+            {
+                "type": "System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+                "key": "firstTime",
+                "value": "{\"m_Value\":true}"
             }
         ]
     }
