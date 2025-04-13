@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -336,27 +337,25 @@ public class PlayerMovement : MonoBehaviour
         moveSpeed = desiredMoveSpeed;
     }
 
+    private Vector3 ProjectOntoPlane(Vector3 vector, Vector3 planeNormal)
+    {
+        Vector3 normal = planeNormal.normalized;
+        return vector - Vector3.Dot(vector, normal) * normal;
+    }
+
     private Vector3 MoveSticky(Transform moveTransform, bool isWallrunning)
     {
-        if (isWallrunning)
-        {
-            float angleRad = Mathf.Acos(Vector3.Dot(moveTransform.up.normalized, lastWallHit.normal.normalized));
-            Quaternion rot = Quaternion.AngleAxis(angleRad * 180 / Mathf.PI, Vector3.Cross(moveTransform.up.normalized, lastWallHit.normal.normalized).normalized);
-            Matrix4x4 rotationMatrix = Matrix4x4.Rotate(rot);
-
-            Vector3 vMove = verticalInput * rotationMatrix.MultiplyVector(moveTransform.forward);
-            Vector3 hMove = horizontalInput * rotationMatrix.MultiplyVector(moveTransform.right);
-            return (vMove + hMove).normalized;
-        }
-
-        //moveDirection = moveTransform.forward * verticalInput + moveTransform.right * horizontalInput;
+        if (!isWallrunning)
+            return moveTransform.forward * verticalInput + moveTransform.right * horizontalInput;
+        
         Vector3 wallNormal = lastWallHit.normal,
-            wallForward = Vector3.Cross(moveTransform.up,wallNormal).normalized;
-        if (Vector3.Dot(wallForward, moveTransform.forward) < 0)
-            wallForward *= -1;
-        return isWallrunning ? wallForward * verticalInput : 
-            moveTransform.forward * verticalInput + moveTransform.right * horizontalInput; 
-        //moveDirection = new Vector3(wallForward.x,wallForward.y,wallForward.z); // autoPilot
+            forwardOnWall = ProjectOntoPlane(moveTransform.forward, wallNormal).normalized,
+            rightOnWall = ProjectOntoPlane(moveTransform.right, wallNormal).normalized,
+            vMove = verticalInput * forwardOnWall,
+            hMove = horizontalInput * rightOnWall,
+            projection = (vMove+hMove).normalized;
+
+        return projection;
     }
 
     private void MovePlayer()
