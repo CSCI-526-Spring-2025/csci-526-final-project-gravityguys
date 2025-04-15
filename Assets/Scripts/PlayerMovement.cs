@@ -224,14 +224,14 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Mode - Crouching
-        else if (crouching)
+        if (crouching)
         {
             state = MovementState.crouching;
             desiredMoveSpeed = crouchSpeed;
         }
 
         // Mode - Dashing 
-        else if (!wallrunning && !isGrounded && Input.GetKey(dashingKey) && readyToDash)
+        if (Input.GetKey(dashingKey) && readyToDash)
         {
             readyToDash = false;
             dashCooldownTimer = dashCooldown;
@@ -243,21 +243,9 @@ public class PlayerMovement : MonoBehaviour
                 rb.AddForce(moveDirection.normalized * dashSpeed * 75, ForceMode.Force);//Dash
             else
             {
-                float y = moveDirection.y;
-                float mag = 75.0f * (1.0f- moveDirection.y) + test * moveDirection.y;
-
-                rb.AddForce(moveDirection.normalized * dashSpeed * mag, ForceMode.Force);//Dash
+                Dash();
             }
-
-
-            if (fovKick != null)
-                fovKick.TriggerDashFOV();
-            if(cameraShake != null)
-                cameraShake.TriggerShake();
-            if(dashTint != null)
-                dashTint.TriggerTint();
-            if(loadingBar != null)
-                loadingBar.ShowDashLoadingBar();
+            DashEffects();
         }
 
         // Mode - Walking
@@ -298,6 +286,26 @@ public class PlayerMovement : MonoBehaviour
         {
             dashCooldownTimer -= Time.deltaTime;
         }
+    }
+
+    private void DashEffects()
+    {
+        if (fovKick != null)
+            fovKick.TriggerDashFOV();
+        if(cameraShake != null)
+            cameraShake.TriggerShake();
+        if(dashTint != null)
+            dashTint.TriggerTint();
+        if(loadingBar != null)
+            loadingBar.ShowDashLoadingBar();
+    }
+
+    private void Dash()
+    {
+        float y = moveDirection.y;
+        float mag = 75.0f * (1.0f- moveDirection.y) + test * moveDirection.y;
+
+        rb.AddForce(moveDirection.normalized * dashSpeed * mag, ForceMode.Force);//Dash
     }
 
     private IEnumerator DashTimer()
