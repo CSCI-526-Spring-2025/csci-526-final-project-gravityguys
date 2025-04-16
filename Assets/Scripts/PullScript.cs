@@ -1,8 +1,12 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Pull : MonoBehaviour
 {
+    
+    [Tooltip("Crosshair Image")]
+    public Image crosshair;
 
     [Tooltip("Hand that is the target destination of the pull")]
     public Transform hand;
@@ -31,7 +35,7 @@ public class Pull : MonoBehaviour
     [Tooltip("The velocity at which the object is thrown")]
     public float throwVelocity;
     public GameObject spriteToShow;
-    private int flag = 0;
+    private bool isHoldingThrowable = false;
     void Update()
     {
 
@@ -46,11 +50,11 @@ public class Pull : MonoBehaviour
         {
             if (Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity))
             {
-                if (hit.transform.tag.Equals(pullableTag) && flag==0)
+                if (hit.transform.tag.Equals(pullableTag) && !isHoldingThrowable)
                 {
                     StartCoroutine(PullObject(hit.transform));
                     spriteToShow.GetComponent<SpriteRenderer>().enabled = true;
-                    flag = 1;
+                    isHoldingThrowable = true;
                 }
             }
         }
@@ -71,9 +75,13 @@ public class Pull : MonoBehaviour
                 heldObject.GetComponent<Rigidbody>().linearVelocity = transform.forward * throwVelocity;
                 heldObject = null;
                 spriteToShow.GetComponent<SpriteRenderer>().enabled = false;
-                flag = 0;
+                isHoldingThrowable = false;
             }
         }
+
+        crosshair.sprite = isHoldingThrowable
+                            ? Resources.Load<Sprite>("shoot")
+                            : Resources.Load<Sprite>("grab");
     }
 
     IEnumerator PullObject(Transform t)
@@ -135,7 +143,7 @@ public class Pull : MonoBehaviour
 
     private void ResetObject()
     {
-        flag = 0;
+        isHoldingThrowable = false;
         //heldObject.gameObject.BroadcastMessage("ResetObject");
         heldObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
         heldObject = null;
