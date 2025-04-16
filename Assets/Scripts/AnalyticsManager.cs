@@ -28,7 +28,8 @@ public class AnalyticsManager : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
+        	Instance.SetLevelNumber(levelNum);
+            Destroy(gameObject); // destroy this duplicate
         }
 
         StartLevelTimer(); // Start tracking time when the level begins
@@ -45,6 +46,12 @@ public class AnalyticsManager : MonoBehaviour
     {
         levelStartTime = Time.time; // Store the time when the level starts
         Debug.Log($"⏳ Level {levelNum} started at {levelStartTime} seconds.");
+    }
+
+    public void SetLevelNumber(int newLevelNum)
+    {
+        levelNum = newLevelNum;
+        Debug.Log($"🔢 Level Number Set to {levelNum}");
     }
 
     public void SetLastPlatformTouched(string platformName)

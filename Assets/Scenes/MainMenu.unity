@@ -1056,10 +1056,10 @@ MonoBehaviour:
 
     Jump: Space
 
-    Dash: Move in
-    air + Left Shift
+    Dash: Left Shift
 
-    Crouch: C
+    Crouch:
+    C
 
     Pause: Esc
 
