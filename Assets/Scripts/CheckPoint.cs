@@ -42,6 +42,7 @@ public class CheckPoint : MonoBehaviour
                     indicator.SetActive(true);
                     StartCoroutine(FadeOutCheckPoint());
                 }
+                AnalyticsManager.Instance.RecordCheckpoint(gameObject.name);
                 isActive = true;
             }
         }

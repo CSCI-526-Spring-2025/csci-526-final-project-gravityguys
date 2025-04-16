@@ -15,6 +15,9 @@ public class AnalyticsManager : MonoBehaviour
 
     private float levelStartTime;
 
+    private string lastCheckpointID = null;
+    private float lastCheckpointTime = 0f;
+
     async void Awake()
     {
         if (Instance == null)
@@ -25,7 +28,8 @@ public class AnalyticsManager : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
+        	Instance.SetLevelNumber(levelNum);
+            Destroy(gameObject); // destroy this duplicate
         }
 
         StartLevelTimer(); // Start tracking time when the level begins
@@ -42,6 +46,12 @@ public class AnalyticsManager : MonoBehaviour
     {
         levelStartTime = Time.time; // Store the time when the level starts
         Debug.Log($"⏳ Level {levelNum} started at {levelStartTime} seconds.");
+    }
+
+    public void SetLevelNumber(int newLevelNum)
+    {
+        levelNum = newLevelNum;
+        Debug.Log($"🔢 Level Number Set to {levelNum}");
     }
 
     public void SetLastPlatformTouched(string platformName)
@@ -71,7 +81,35 @@ public class AnalyticsManager : MonoBehaviour
         AnalyticsService.Instance.RecordEvent(timeEvent);
         Debug.Log($"📊 Analytics Event Sent: Time To Complete Level - {timeToCompleteLevel} seconds");
 
+        RecordCheckpoint("LEVEL_END");
+
         SendLevelAnalytics();
+    }
+
+    public void RecordCheckpoint(string checkpointID)
+    {
+        float currentTime = Time.time;
+        int timeSinceLast = Mathf.RoundToInt(currentTime - lastCheckpointTime);
+
+        string fromID = lastCheckpointID ?? "START";
+
+        AnalyticsService.Instance.RecordEvent(new CheckpointTimingEvent(
+            levelNum,
+            fromID,
+            checkpointID,
+            timeSinceLast
+        ));
+
+        Debug.Log($"📊 Analytics Event Sent: From {fromID} -> {checkpointID}, Time: {timeSinceLast}s");
+
+        lastCheckpointID = checkpointID;
+        lastCheckpointTime = currentTime;
+    }
+
+    public void ResetCheckpointTiming()
+    {
+        lastCheckpointID = null;
+        lastCheckpointTime = Time.time;
     }
 
     // Track and send data when the player quits or moves to the next level
@@ -85,6 +123,7 @@ public class AnalyticsManager : MonoBehaviour
         // Reset for the next level
         deathNum = 0;
         completedLevel = false;
+        ResetCheckpointTiming();
         StartLevelTimer();
     }
 
@@ -122,5 +161,17 @@ public class TimeToCompleteLevelEvent : Unity.Services.Analytics.Event
     {
         SetParameter("zLevelNum", levelNum);
         SetParameter("zTimeInSeconds", timeInSeconds);
+    }
+}
+
+public class CheckpointTimingEvent : Unity.Services.Analytics.Event
+{
+    public CheckpointTimingEvent(int levelNum, string fromCheckpoint, string toCheckpoint, int timeSinceLast) : base("checkpointTiming")
+    {
+        SetParameter("zLevelNum", levelNum);
+        SetParameter("zFromCheckpointID", fromCheckpoint);
+        SetParameter("zToCheckpointID", toCheckpoint);
+        SetParameter("zTimeSinceLast", timeSinceLast);
+        SetParameter("zCheckpointID", toCheckpoint); // for consistency
     }
 }

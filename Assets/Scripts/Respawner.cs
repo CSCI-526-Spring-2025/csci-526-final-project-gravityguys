@@ -27,6 +27,22 @@ public class Respawner : MonoBehaviour
         }
         Player.transform.rotation = Quaternion.Euler(0, 0, 0);
         Player.transform.parent.GetChild(2).transform.rotation = Quaternion.Euler(0, 0, 0);
+
+        foreach(GameObject i in GameObject.FindGameObjectsWithTag("Pullable"))
+        {
+            Debug.Log("Reset Object - " + i.name);
+            i.BroadcastMessage("ResetObject");
+        }
+        foreach (GameObject i in GameObject.FindGameObjectsWithTag("DestructibleWall"))
+        {
+            Debug.Log("Reset Object - " + i.name);
+            i.BroadcastMessage("ResetObject");
+        }
+        GameObject hand = GameObject.Find("Hand");
+        if (hand != null && hand.transform.childCount > 0)
+        {
+            hand.transform.DetachChildren();
+        }
     }
 
     private void SetCheckPoint(CheckPoint newCheckPoint)
