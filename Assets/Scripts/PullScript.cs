@@ -79,6 +79,7 @@ public class Pull : MonoBehaviour
             }
         }
 
+        if (crosshair == null) return;
         crosshair.sprite = isHoldingThrowable
                             ? Resources.Load<Sprite>("shoot")
                             : Resources.Load<Sprite>("grab");
