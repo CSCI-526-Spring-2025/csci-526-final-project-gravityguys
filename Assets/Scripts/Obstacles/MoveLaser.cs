@@ -13,6 +13,10 @@ public class MoveLaser : MonoBehaviour
 
     [SerializeField] int index = 0;
 
+    [SerializeField] bool isTrail = false;
+    [SerializeField] int startIndex;
+    [SerializeField] int endIndex;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -54,10 +58,17 @@ public class MoveLaser : MonoBehaviour
                 Laser.transform.localRotation = rotation;
             }
         }
-    }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        Debug.Log(other.name);
+        if (isTrail)
+        {
+            if(index == startIndex)
+            {
+                Laser.GetComponent<TrailRenderer>().enabled = true;
+            }
+            else if (index == endIndex)
+            {
+                Laser.GetComponent<TrailRenderer>().enabled = false;
+            }
+        }
     }
 }
