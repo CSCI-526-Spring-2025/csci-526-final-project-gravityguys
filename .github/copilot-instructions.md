@@ -2,7 +2,7 @@
 - Project name: csci-526-final-project-gravityguys_ClassRepo
 - Unity version: Unity 6000.0.34f1
 - Active scene:
-  - Name: LevelTwoScene
+  - Name: LevelOneScene
   - Tags:
     - Untagged, Respawn, Finish, EditorOnly, MainCamera, Player, GameController, Instruction, DashEffect, Pullable, DestructibleWall
   - Layers:
