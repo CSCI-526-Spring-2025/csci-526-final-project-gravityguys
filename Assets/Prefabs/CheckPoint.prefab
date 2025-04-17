@@ -185,8 +185,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83a797d82f14061488762f2fe98e6bdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  indicator: {fileID: 0}
+  indicator: {fileID: 4972527974913634179}
+  checkptText: {fileID: 0}
   checkPoint: {fileID: 7489176211082000108}
+  displayTime: 1
+  fadeSpeed: 1
 --- !u!1 &4882916673316936544
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,7 +201,7 @@ GameObject:
   - component: {fileID: 7489176211082000108}
   m_Layer: 0
   m_Name: CheckPointPos
-  m_TagString: Respawn
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

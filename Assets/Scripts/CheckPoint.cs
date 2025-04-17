@@ -17,6 +17,9 @@ public class CheckPoint : MonoBehaviour
     private void Start()
     {
         respawnPoint = GameObject.FindGameObjectWithTag("Respawn");
+        Debug.Log("Respawn Point: " + respawnPoint.name);
+        var hasRespawner = respawnPoint.GetComponent<Respawner>() != null;
+        Debug.Log("Has Respawner: " + hasRespawner);
 
         if (checkptText != null)
         {
