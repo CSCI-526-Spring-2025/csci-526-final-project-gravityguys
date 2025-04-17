@@ -3337,6 +3337,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1689023395457412385, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
+      propertyPath: indicator
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1689023395457412385, guid: 475e6fb8fdf30434898647cc30d7524d, type: 3}
       propertyPath: respawnPoint
       value: 
       objectReference: {fileID: 0}
