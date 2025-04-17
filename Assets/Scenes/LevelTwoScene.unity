@@ -2012,6 +2012,10 @@ PrefabInstance:
       propertyPath: field of view
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 5546150588620297535, guid: 11f62522804549f4bbe89c82984749e4, type: 3}
+      propertyPath: dashSpeed
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 6902522278358351042, guid: 11f62522804549f4bbe89c82984749e4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10

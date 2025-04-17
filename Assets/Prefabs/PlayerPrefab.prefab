@@ -183,6 +183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e4eca2c8fc3b4de7b8e8c9372e38927, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  test: 0
   walkSpeed: 8
   wallrunSpeed: 10
   speedIncreaseMultiplier: 1.75
@@ -194,7 +195,7 @@ MonoBehaviour:
   airMultiplier: 0.4
   crouchSpeed: 3.5
   crouchYScale: 0.5
-  dashSpeed: 50
+  dashSpeed: 100
   dashTime: 0.2
   dashCooldown: 1
   readyToDash: 1

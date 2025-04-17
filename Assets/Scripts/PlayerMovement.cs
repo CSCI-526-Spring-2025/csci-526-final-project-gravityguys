@@ -32,7 +32,7 @@ public class PlayerMovement : MonoBehaviour
     private float startYScale;
 
     [Header("Dashing")]
-    public float dashSpeed = 200f;
+    public float dashSpeed = 100;
     public float dashTime = 0.2f;
     public float dashCooldown = 1.0f;
     private float dashCooldownTimer;
