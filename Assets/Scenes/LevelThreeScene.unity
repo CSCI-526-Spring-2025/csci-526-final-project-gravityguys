@@ -5769,6 +5769,14 @@ PrefabInstance:
       propertyPath: EulerCamera.z
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 4421179620645332743, guid: 5a10629102af3f34fae7763986826fce, type: 3}
+      propertyPath: overrideEuler.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421179620645332743, guid: 5a10629102af3f34fae7763986826fce, type: 3}
+      propertyPath: overrideEulerExit
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7713375727214091135, guid: 5a10629102af3f34fae7763986826fce, type: 3}
       propertyPath: m_LocalScale.x
       value: 41.693333

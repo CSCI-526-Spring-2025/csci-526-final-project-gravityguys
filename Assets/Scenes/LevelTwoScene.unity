@@ -3490,6 +3490,14 @@ PrefabInstance:
       value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 4421179620645332743, guid: 5a10629102af3f34fae7763986826fce, type: 3}
+      propertyPath: overrideEuler.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421179620645332743, guid: 5a10629102af3f34fae7763986826fce, type: 3}
+      propertyPath: overrideEulerExit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421179620645332743, guid: 5a10629102af3f34fae7763986826fce, type: 3}
       propertyPath: usePrecalculatedRotation
       value: 1
       objectReference: {fileID: 0}

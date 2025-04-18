@@ -64,6 +64,8 @@ public class GravityController : MonoBehaviour
         }
 
     }
+
+    private Vector3 EulerOverride;
     private void ShiftGravity(Vector3 newDirection)
     {
         Transform t = this.gameObject.transform;
@@ -71,17 +73,19 @@ public class GravityController : MonoBehaviour
         {
             StopAllCoroutines();
             activeGravitySource.checkForEnter = true;
+            bool isExit = activeGravitySource.overrideEulerExit;
+            EulerOverride = activeGravitySource.overrideEuler;
             activeGravitySource = null;
                 
             gravityDir = newDirection;
 
-            StartCoroutine(RotatePlayer(t));
+            StartCoroutine(RotatePlayer(t, isExit));
             
         }
 
     }
 
-    private IEnumerator RotatePlayer(Transform t)
+    private IEnumerator RotatePlayer(Transform t, bool isExit = false)
     {
         currentlyShifting = true;
 
@@ -99,7 +103,11 @@ public class GravityController : MonoBehaviour
         Quaternion camQ1 = camera.transform.localRotation;
         Transform camT2 = camera.transform;
         Quaternion camQ2;
-        if(activeGravitySource)
+        if (isExit)
+        {
+            camQ2 = Quaternion.Euler(EulerOverride);
+        }
+        else if(activeGravitySource)
         {
             camQ2 = Quaternion.Euler(activeGravitySource.EulerCamera);
         }
@@ -111,7 +119,11 @@ public class GravityController : MonoBehaviour
         Quaternion pQ1 = this.gameObject.transform.localRotation;
         Transform pT2 = this.gameObject.transform;
         Quaternion pQ2;
-        if (activeGravitySource)
+        if (isExit)
+        {
+            pQ2 = Quaternion.Euler(EulerOverride);
+        }
+        else if (activeGravitySource)
         {
             pQ2 = Quaternion.Euler(activeGravitySource.EulerCamera);
         }
@@ -120,6 +132,7 @@ public class GravityController : MonoBehaviour
             pQ2 = Quaternion.Euler(0, 0, 0);
         }
 
+        isExit = false;
         pQ2.Normalize();
         camQ2.Normalize();
 
