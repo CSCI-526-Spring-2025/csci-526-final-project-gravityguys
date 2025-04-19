@@ -7,6 +7,10 @@ public class PauseScript : MonoBehaviour
 
     public GameObject pauseUI;
     public GameObject loseUI;
+    public GameObject HUD;
+
+    public GameObject controlsScreen;
+
     public string levelSelectScene;
     public string mainMenuScene;
     public static bool IsGamePaused = false;
@@ -38,6 +42,8 @@ public class PauseScript : MonoBehaviour
             {
                 pausePhysics();
                 pauseUI.SetActive(true);
+                HUD.SetActive(false);
+
             }
         }
     }
@@ -58,10 +64,23 @@ public class PauseScript : MonoBehaviour
         IsGamePaused = false;
         pauseUI.SetActive(false);
         loseUI.SetActive(false);
+        HUD.SetActive(true);
     }
     public void levelSelectLoad()
     {
         SceneManager.LoadScene(levelSelectScene);
+    }
+    
+    public void ShowControls()
+    {
+        pauseUI.SetActive(false);
+        controlsScreen.SetActive(true);
+    }
+
+    public void BackToPause()
+    {
+        pauseUI.SetActive(true);
+        controlsScreen.SetActive(false);
     }
 
     public void mainMenuLoad()
