@@ -35,6 +35,7 @@ public class Pull : MonoBehaviour
     [Tooltip("The velocity at which the object is thrown")]
     public float throwVelocity;
     public GameObject spriteToShow;
+    public GameObject breakWall;
     private bool isHoldingThrowable = false;
     void Update()
     {
@@ -53,7 +54,9 @@ public class Pull : MonoBehaviour
                 if (hit.transform.tag.Equals(pullableTag) && !isHoldingThrowable)
                 {
                     StartCoroutine(PullObject(hit.transform));
-                    spriteToShow.GetComponent<SpriteRenderer>().enabled = true;
+                    if(breakWall.GetComponent<BoxCollider>().enabled == true){
+                        spriteToShow.GetComponent<SpriteRenderer>().enabled = true;
+                    }
                     isHoldingThrowable = true;
                 }
             }

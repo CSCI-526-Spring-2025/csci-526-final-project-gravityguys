@@ -577,6 +577,7 @@ GameObject:
   - component: {fileID: 196775662}
   - component: {fileID: 196775661}
   - component: {fileID: 196775660}
+  - component: {fileID: 196775665}
   m_Layer: 0
   m_Name: Bottom Bound
   m_TagString: Untagged
@@ -686,6 +687,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &196775665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196775659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4749250af1f21484c90ab77b0128e798, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &205272570
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1168,6 +1181,7 @@ MonoBehaviour:
   maxVelocity: 10
   throwVelocity: 32
   spriteToShow: {fileID: 2070986216}
+  breakWall: {fileID: 413678225}
 --- !u!224 &303938836 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5050728219538253273, guid: 11f62522804549f4bbe89c82984749e4, type: 3}
@@ -1523,6 +1537,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2116819545}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &413678225 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8479175168377746296, guid: c0489aa560074493f9559cd716f4d14a, type: 3}
+  m_PrefabInstance: {fileID: 677283776}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &457433829
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2016,6 +2035,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: DestructibleWall
       objectReference: {fileID: 0}
+    - target: {fileID: 8564245890423770438, guid: c0489aa560074493f9559cd716f4d14a, type: 3}
+      propertyPath: leftClickSprite
+      value: 
+      objectReference: {fileID: 667702721}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

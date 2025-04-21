@@ -5,6 +5,8 @@ public class PlatformExplode : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public GameObject shatterEffectPrefab;
     public float velocity;
+
+    public GameObject leftClickSprite;
     void Start()
     {
 
@@ -33,6 +35,7 @@ public class PlatformExplode : MonoBehaviour
                 GameObject g = gameObject.transform.GetChild(i).gameObject;
                 g.GetComponent<MeshRenderer>().enabled = false;
             }
+            leftClickSprite.GetComponent<SpriteRenderer>().enabled = false;
         }
     }
 
@@ -45,5 +48,6 @@ public class PlatformExplode : MonoBehaviour
             GameObject g = gameObject.transform.GetChild(i).gameObject;
             g.GetComponent<MeshRenderer>().enabled = true;
         }
+        leftClickSprite.GetComponent<SpriteRenderer>().enabled = true;
     }
 }
