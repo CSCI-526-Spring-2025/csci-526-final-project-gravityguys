@@ -80,7 +80,7 @@ public class PlayerMovement : MonoBehaviour
     GravityController gc;
 
     public MovementState state;
-    
+
     public enum MovementState
     {
         walking,
@@ -152,22 +152,22 @@ public class PlayerMovement : MonoBehaviour
     private void HandleAnalytics()
     {
         RaycastHit hit = isGrounded ? groundHit
-                            : (wallrunning ? lastWallHit 
+                            : (wallrunning ? lastWallHit
                                 : default);
         if (hit.point != Vector3.zero)//either ground or wall hit
         {
             AnalyticsManager.Instance.SetLastPlatformTouched(hit.collider.gameObject.name);
         }
-                
+
     }
 
     private void HandleDrag()
     {
         isGrounded = Physics.Raycast(
-                    transform.position, 
-                    -orientation.transform.up, 
-                    out groundHit, 
-                    playerHeight * 0.5f + 0.5f, 
+                    transform.position,
+                    -orientation.transform.up,
+                    out groundHit,
+                    playerHeight * 0.5f + 0.5f,
                     whatIsGround);
         rb.linearDamping = (isGrounded || wallrunning) ? groundDrag : 0;
     }
@@ -230,13 +230,14 @@ public class PlayerMovement : MonoBehaviour
             desiredMoveSpeed = crouchSpeed;
         }
 
-        // Mode - Dashing 
+        // Mode - Dashing
         if (Input.GetKey(dashingKey) && readyToDash)
         {
             readyToDash = false;
             dashCooldownTimer = dashCooldown;
             Debug.Log("entered" + i++);
             state = MovementState.dashing;
+            AnalyticsManager.Instance.IncrementDashCount();
             moveDirection = (orientation.forward * verticalInput + orientation.right * horizontalInput).normalized;
 
             if(!gc.activeGravitySource)
@@ -355,7 +356,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!isWallrunning)
             return moveTransform.forward * verticalInput + moveTransform.right * horizontalInput;
-        
+
         Vector3 wallNormal = lastWallHit.normal,
             forwardOnWall = ProjectOntoPlane(moveTransform.forward, wallNormal).normalized,
             rightOnWall = ProjectOntoPlane(moveTransform.right, wallNormal).normalized,
@@ -374,7 +375,7 @@ public class PlayerMovement : MonoBehaviour
         if (gc) gc.SetUseGravity(!wallrunning);
         Transform moveTransform = wallrunning ? playerCameraHolder : orientation;
         moveDirection = MoveSticky(moveTransform, wallrunning);
-        
+
         // on slope
         if (OnSlope() && !exitingSlope)
         {
@@ -421,11 +422,11 @@ public class PlayerMovement : MonoBehaviour
 
         // reset y velocity
         //rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-        rb.AddForce((wallrunning ? 
-                    (orientation.up + lastWallHit.normal).normalized 
-                    : orientation.up) 
+        rb.AddForce((wallrunning ?
+                    (orientation.up + lastWallHit.normal).normalized
+                    : orientation.up)
                       * jumpForce, ForceMode.Impulse);
-        
+
     }
     private void ResetJump()
     {

@@ -10,6 +10,7 @@ public class AnalyticsManager : MonoBehaviour
     [SerializeField] private int levelNum = 0;
 
     private int deathNum = 0;
+    private int dashCount = 0;
     private bool completedLevel = false;
     private string lastPlatformTouched = "Unknown";
 
@@ -112,17 +113,27 @@ public class AnalyticsManager : MonoBehaviour
         lastCheckpointTime = Time.time;
     }
 
+    public void IncrementDashCount()
+    {
+        dashCount++;
+    }
+
     // Track and send data when the player quits or moves to the next level
     private void SendLevelAnalytics()
     {
         DeathCounterEvent deathCounterEvent = new DeathCounterEvent(completedLevel, deathNum, levelNum);
         AnalyticsService.Instance.RecordEvent(deathCounterEvent);
 
+        DashUsageEvent dashUsageEvent = new DashUsageEvent(levelNum, dashCount);
+        AnalyticsService.Instance.RecordEvent(dashUsageEvent);
+
         Debug.Log($"📊 Analytics Event Sent: completedLevel={completedLevel}, deathNum={deathNum}, levelNum={levelNum}");
+        Debug.Log($"📊 Analytics Event Sent: dashCount={dashCount}, levelNum={levelNum}");
 
         // Reset for the next level
         deathNum = 0;
         completedLevel = false;
+        dashCount = 0;
         ResetCheckpointTiming();
         StartLevelTimer();
     }
@@ -173,5 +184,14 @@ public class CheckpointTimingEvent : Unity.Services.Analytics.Event
         SetParameter("zToCheckpointID", toCheckpoint);
         SetParameter("zTimeSinceLast", timeSinceLast);
         SetParameter("zCheckpointID", toCheckpoint); // for consistency
+    }
+}
+
+public class DashUsageEvent : Unity.Services.Analytics.Event
+{
+    public DashUsageEvent(int levelNum, int dashCount) : base("dashUsage")
+    {
+        SetParameter("zLevelNum", levelNum);
+        SetParameter("zDashCount", dashCount);
     }
 }
