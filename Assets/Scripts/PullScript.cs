@@ -81,8 +81,8 @@ public class Pull : MonoBehaviour
 
         if (crosshair == null) return;
         crosshair.sprite = isHoldingThrowable
-                            ? Resources.Load<Sprite>("shoot")
-                            : Resources.Load<Sprite>("grab");
+                            ? Resources.Load<Sprite>("close")
+                            : Resources.Load<Sprite>("open");
     }
 
     IEnumerator PullObject(Transform t)
