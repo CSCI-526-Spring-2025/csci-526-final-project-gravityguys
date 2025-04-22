@@ -1086,6 +1086,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: DestructibleWall
       objectReference: {fileID: 0}
+    - target: {fileID: 1293974953152157644, guid: 11f62522804549f4bbe89c82984749e4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3145881915692306423, guid: 11f62522804549f4bbe89c82984749e4, type: 3}
       propertyPath: field of view
       value: 90
