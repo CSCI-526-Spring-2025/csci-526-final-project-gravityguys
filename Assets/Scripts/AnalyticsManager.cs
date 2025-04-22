@@ -12,7 +12,7 @@ public class AnalyticsManager : MonoBehaviour
     private int deathNum = 0;
     private int dashCount = 0;
     private bool completedLevel = false;
-    private string lastPlatformTouched = "Unknown";
+    public string lastPlatformTouched = "Unknown";
 
     private float levelStartTime;
 
@@ -113,24 +113,21 @@ public class AnalyticsManager : MonoBehaviour
         lastCheckpointTime = Time.time;
     }
 
-    public void IncrementDashCount()
+    public void RecordDashUsage(string platformName)
     {
         dashCount++;
+        AnalyticsService.Instance.RecordEvent(new DashUsageEvent(levelNum, platformName, dashCount));
+        Debug.Log($"🚀 Dash #{dashCount} from {platformName} on Level {levelNum}");
     }
 
     // Track and send data when the player quits or moves to the next level
     private void SendLevelAnalytics()
     {
-        DeathCounterEvent deathCounterEvent = new DeathCounterEvent(completedLevel, deathNum, levelNum);
+        var deathCounterEvent = new DeathCounterEvent(completedLevel, deathNum, levelNum);
         AnalyticsService.Instance.RecordEvent(deathCounterEvent);
 
-        DashUsageEvent dashUsageEvent = new DashUsageEvent(levelNum, dashCount);
-        AnalyticsService.Instance.RecordEvent(dashUsageEvent);
-
         Debug.Log($"📊 Analytics Event Sent: completedLevel={completedLevel}, deathNum={deathNum}, levelNum={levelNum}");
-        Debug.Log($"📊 Analytics Event Sent: dashCount={dashCount}, levelNum={levelNum}");
 
-        // Reset for the next level
         deathNum = 0;
         completedLevel = false;
         dashCount = 0;
@@ -189,9 +186,10 @@ public class CheckpointTimingEvent : Unity.Services.Analytics.Event
 
 public class DashUsageEvent : Unity.Services.Analytics.Event
 {
-    public DashUsageEvent(int levelNum, int dashCount) : base("dashUsage")
+    public DashUsageEvent(int levelNum, string platformName, int dashNum) : base("dashUsage")
     {
         SetParameter("zLevelNum", levelNum);
-        SetParameter("zDashCount", dashCount);
+        SetParameter("zPlatformName", platformName);
+        SetParameter("zDashNum", dashNum);
     }
 }
