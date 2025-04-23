@@ -237,7 +237,9 @@ public class PlayerMovement : MonoBehaviour
             dashCooldownTimer = dashCooldown;
             Debug.Log("entered" + i++);
             state = MovementState.dashing;
-            AnalyticsManager.Instance.IncrementDashCount();
+
+            string platformName = GetCurrentPlatformName();
+            AnalyticsManager.Instance.RecordDashUsage(platformName);
             moveDirection = (orientation.forward * verticalInput + orientation.right * horizontalInput).normalized;
 
             if(!gc.activeGravitySource)
@@ -484,5 +486,8 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
+    private string GetCurrentPlatformName()
+    {
+        return AnalyticsManager.Instance != null ? AnalyticsManager.Instance.lastPlatformTouched : "Unknown";
+    }
 }
