@@ -8,6 +8,7 @@ public class PauseScript : MonoBehaviour
     public GameObject pauseUI;
     public GameObject loseUI;
     public GameObject HUD;
+    public GameObject nextLevelButton;
 
     public GameObject controlsScreen;
 
@@ -53,7 +54,6 @@ public class PauseScript : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         IsGamePaused = true;
-
     }
 
 
@@ -69,6 +69,20 @@ public class PauseScript : MonoBehaviour
     public void levelSelectLoad()
     {
         SceneManager.LoadScene(levelSelectScene);
+    }
+
+    public void loadNextLevel()
+    {
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        if (currentScene == "LevelOneScene")
+        {
+            SceneManager.LoadScene("LevelTwoScene");
+        }
+        else if (currentScene == "LevelTwoScene")
+        {
+            SceneManager.LoadScene("LevelThreeScene");
+        }
     }
     
     public void ShowControls()
