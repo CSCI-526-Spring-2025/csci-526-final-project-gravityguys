@@ -1087,6 +1087,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelNum: 2
+  lastPlatformTouched: Unknown
 --- !u!1 &287854163
 GameObject:
   m_ObjectHideFlags: 0
@@ -2027,6 +2028,10 @@ PrefabInstance:
     - target: {fileID: 3145881915692306423, guid: 11f62522804549f4bbe89c82984749e4, type: 3}
       propertyPath: field of view
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 5465330090668756858, guid: 11f62522804549f4bbe89c82984749e4, type: 3}
+      propertyPath: m_text
+      value: P to Pause
       objectReference: {fileID: 0}
     - target: {fileID: 5546150588620297535, guid: 11f62522804549f4bbe89c82984749e4, type: 3}
       propertyPath: dashSpeed

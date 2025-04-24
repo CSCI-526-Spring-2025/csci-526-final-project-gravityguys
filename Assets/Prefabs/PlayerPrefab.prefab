@@ -932,7 +932,7 @@ MonoBehaviour:
   controlsScreen: {fileID: 1895079218376064476}
   levelSelectScene: LevelSelect
   mainMenuScene: MainMenu
-  pauseKey: 27
+  pauseKey: 112
 --- !u!1 &1563537776726822568
 GameObject:
   m_ObjectHideFlags: 0
