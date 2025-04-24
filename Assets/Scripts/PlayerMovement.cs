@@ -246,7 +246,7 @@ public class PlayerMovement : MonoBehaviour
                 rb.AddForce(moveDirection.normalized * dashSpeed * 75, ForceMode.Force);//Dash
             else
             {
-                Dash();
+                //Dash();
             }
             DashEffects();
         }

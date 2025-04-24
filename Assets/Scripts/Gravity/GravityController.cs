@@ -15,6 +15,8 @@ public class GravityController : MonoBehaviour
 
     bool fixAngles = false;
 
+    [SerializeField] GameObject SphereCollider;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -88,6 +90,7 @@ public class GravityController : MonoBehaviour
     private IEnumerator RotatePlayer(Transform t, bool isExit = false)
     {
         currentlyShifting = true;
+        SphereCollider.SetActive(true);
 
         PlayerCamera pc = Camera.main.gameObject.GetComponent<PlayerCamera>();
 
@@ -152,6 +155,7 @@ public class GravityController : MonoBehaviour
             yield return null;
         }
 
+        SphereCollider.SetActive(false);
         currentlyShifting = false;
         fixAngles = true;
         yield return null;
