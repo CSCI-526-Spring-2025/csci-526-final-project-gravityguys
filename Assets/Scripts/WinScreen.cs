@@ -19,10 +19,15 @@ public class WinScreen : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Player"))
         {
-
             AnalyticsManager.Instance.PlayerWon();
             PauseScript.Instance.pausePhysics();
             winUI.SetActive(true);
+            if (SceneManager.GetActiveScene().name == "LevelThreeScene")
+            {
+                GameObject nextLevelButton = GameObject.Find("Next Level Button");
+                if(nextLevelButton)
+                    nextLevelButton.SetActive(false);
+            }
         }
     }
 }
