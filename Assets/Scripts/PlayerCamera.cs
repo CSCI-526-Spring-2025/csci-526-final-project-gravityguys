@@ -14,10 +14,12 @@ public class PlayerCamera : MonoBehaviour
     public float yRotation;
 
     private float scaledMouse;
+    private bool skipFirstMouseInput;
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        skipFirstMouseInput = true;
 
         Vector3 initRot = camHolder.eulerAngles;
         xRotation = initRot[0];
@@ -33,19 +35,15 @@ public class PlayerCamera : MonoBehaviour
         }
     }
 
-    private void setCamera(Vector3 lookat)
-    {
-        xRotation = lookat[0];
-        yRotation = lookat[1];
-
-        camHolder.localRotation = Quaternion.Euler(xRotation, yRotation, 0);
-        orientation.localRotation = Quaternion.Euler(0, yRotation, 0);
-    }
-
     private void Update()
     {
         if (!PauseScript.IsGamePaused)
         {
+            if (skipFirstMouseInput)
+            {
+                skipFirstMouseInput = false;//ignore the first mouse input after Cursor.lockState = CursorLockMode.Locked;
+                return;
+            }
             // get mouse input
             float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX * scaledMouse;
             float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY * scaledMouse;
