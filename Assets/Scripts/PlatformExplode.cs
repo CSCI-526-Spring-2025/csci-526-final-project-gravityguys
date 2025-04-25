@@ -16,9 +16,10 @@ public class PlatformExplode : MonoBehaviour
 
     }
 
+    GameObject collidedObj;
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.relativeVelocity.magnitude);
+        //Debug.Log(collision.relativeVelocity.magnitude);
         if (collision.relativeVelocity.magnitude > velocity && collision.gameObject.CompareTag("Pullable"))
         {
             GameObject effect = Instantiate(shatterEffectPrefab, transform.position, Quaternion.identity);
@@ -33,7 +34,10 @@ public class PlatformExplode : MonoBehaviour
                 GameObject g = gameObject.transform.GetChild(i).gameObject;
                 g.GetComponent<MeshRenderer>().enabled = false;
             }
-        }
+
+            collidedObj = collision.gameObject;
+            collidedObj.SetActive(false);
+        }        
     }
 
     private void ResetObject()
@@ -45,5 +49,9 @@ public class PlatformExplode : MonoBehaviour
             GameObject g = gameObject.transform.GetChild(i).gameObject;
             g.GetComponent<MeshRenderer>().enabled = true;
         }
+
+        collidedObj.SetActive(true);
+        collidedObj.BroadcastMessage("ResetObject");
+        collidedObj = null;
     }
 }
