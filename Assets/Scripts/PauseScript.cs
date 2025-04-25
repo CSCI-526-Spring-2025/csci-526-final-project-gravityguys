@@ -75,7 +75,12 @@ public class PauseScript : MonoBehaviour
     {
         string currentScene = SceneManager.GetActiveScene().name;
 
-        if (currentScene == "LevelOneScene")
+
+        if (currentScene == "LevelNegativeOneScene")
+        {
+            SceneManager.LoadScene("LevelOneScene");
+        }
+        else if (currentScene == "LevelOneScene")
         {
             SceneManager.LoadScene("LevelTwoScene");
         }
