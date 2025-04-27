@@ -11,10 +11,9 @@ public class SensitivitySliderUI : MonoBehaviour
     {
         // Get the PlayerCamera script that's on the same GameObject
         playerCam = GetComponent<PlayerCamera>();
+        sensitivitySlider.value = SensitivityManager.sensX;
+        OnSliderValueChanged(SensitivityManager.sensX);
         sensitivitySlider.onValueChanged.AddListener(OnSliderValueChanged);
-
-        // Set initial values when scene starts
-        OnSliderValueChanged(sensitivitySlider.value);
     }
 
     void OnSliderValueChanged(float value)
@@ -25,5 +24,7 @@ public class SensitivitySliderUI : MonoBehaviour
             playerCam.sensX = value;
             playerCam.sensY = value;
         }
+        SensitivityManager.sensX = value;
+        SensitivityManager.sensY = value;
     }
 }
