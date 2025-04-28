@@ -5,6 +5,8 @@ public class PlatformExplode : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public GameObject shatterEffectPrefab;
     public float velocity;
+
+    public GameObject leftMouse;
     void Start()
     {
 
@@ -37,6 +39,7 @@ public class PlatformExplode : MonoBehaviour
 
             collidedObj = collision.gameObject;
             collidedObj.SetActive(false);
+            leftMouse.SetActive(false);
         }        
     }
 
@@ -53,5 +56,6 @@ public class PlatformExplode : MonoBehaviour
         collidedObj.SetActive(true);
         collidedObj.BroadcastMessage("ResetObject");
         collidedObj = null;
+        leftMouse.SetActive(true);
     }
 }
