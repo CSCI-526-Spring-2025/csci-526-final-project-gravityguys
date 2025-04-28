@@ -94,7 +94,10 @@ public class Pull : MonoBehaviour
             //  If the player right-clicks, stop pulling
             if (Input.GetMouseButtonDown(1))
             {
-                break;
+                isHoldingThrowable = false;
+                spriteToShow.GetComponent<SpriteRenderer>().enabled = false;
+                // and bail out
+                yield break;
             }
             float distanceToHand = Vector3.Distance(t.position, hand.position);
             /*
@@ -111,7 +114,7 @@ public class Pull : MonoBehaviour
                 t.parent = hand;
                 r.constraints = RigidbodyConstraints.FreezePosition;
                 heldObject = t;
-                break;
+                yield break;
             }
 
             //  Calculate the pull direction vector
